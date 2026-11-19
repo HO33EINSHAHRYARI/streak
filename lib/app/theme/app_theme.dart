@@ -12,8 +12,8 @@ import 'package:streak/core/utils/responsive.dart';
 class AppTheme {
   const AppTheme._();
 
-  static const _fontFamily = 'Figtree';
-  static const classicFont = 'GoogleSansRounded';
+  static const _fontFamily = 'Peyda';
+  static const classicFont = 'Peyda';
 
   static bool isClassic(BuildContext context) =>
       Theme.of(context).textTheme.bodyMedium?.fontFamily == classicFont;
