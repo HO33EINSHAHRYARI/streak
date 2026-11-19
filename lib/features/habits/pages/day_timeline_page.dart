@@ -342,7 +342,7 @@ class _DayTimelinePageState extends State<DayTimelinePage> {
               ),
         title: express || minimal
             ? null
-            : Text(DateFormat.yMMMM(locale).format(_day)),
+            : Text((locale.startsWith('fa') ? '${_day.shamsiMonthName} ${_day.shamsiYear}' : DateFormat.yMMMM(locale).format(_day))),
         actions: [
           if (style.planTodos)
             express
@@ -403,14 +403,14 @@ class _DayTimelinePageState extends State<DayTimelinePage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(18, 0, 18, 14),
                   child: ExpressHeadline(
-                    title: DateFormat.yMMMM(locale).format(_day),
+                    title: (locale.startsWith('fa') ? '${_day.shamsiMonthName} ${_day.shamsiYear}' : DateFormat.yMMMM(locale).format(_day)),
                   ),
                 ),
               if (minimal)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   child: MinimalTitle(
-                    title: DateFormat.yMMMM(locale).format(_day),
+                    title: (locale.startsWith('fa') ? '${_day.shamsiMonthName} ${_day.shamsiYear}' : DateFormat.yMMMM(locale).format(_day)),
                   ),
                 ),
               TimelineWeekStrip(
