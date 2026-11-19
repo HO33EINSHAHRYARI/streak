@@ -1,4 +1,4 @@
-name: Build & Release Persian APK
+name: Build & Release Persian APK and Windows
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
       tag:
         description: 'Release tag'
         required: false
-        default: 'v2.10.0-fa'
+        default: 'v2.10.1-fa'
         type: string
 
 permissions:
@@ -19,7 +19,7 @@ env:
   FLUTTER_VERSION: '3.41.9'
 
 jobs:
-  build:
+  build-apk:
     name: Build Persian APKs
     runs-on: ubuntu-latest
 
@@ -39,9 +39,6 @@ jobs:
           channel: stable
           flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
-
-      - name: Show versions
-        run: flutter --version
 
       - name: Install dependencies
         run: flutter pub get
@@ -63,23 +60,66 @@ jobs:
           path: build/app/outputs/flutter-apk/Streak-Persian-*.apk
           if-no-files-found: error
 
+  build-windows:
+    name: Build Persian Windows App
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Windows
+        run: flutter build windows --release
+
+      - name: Zip the build
+        run: Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath Streak-Persian-windows-x64.zip
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: streak-persian-windows
+          path: Streak-Persian-windows-x64.zip
+          if-no-files-found: error
+
+  release:
+    name: Publish GitHub Release
+    needs: [build-apk, build-windows]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.tag || 'v2.10.0-fa' }}
-          name: 'Streak فارسی (Habit Tracker) - نسخه v2.10.0'
+          tag_name: ${{ github.event.inputs.tag || 'v2.10.1-fa' }}
+          name: 'Streak فارسی (بدون راست‌چین / LTR Layout) - نسخه v2.10.1'
           body: |
-            ## نسخه فارسی اپلیکیشن Streak (ردیاب عادات و پیوستگی) 🚀
+            ## نسخه اصلاح‌شده Streak فارسی (چیدمان استاندارد LTR) 🚀
             
-            - کاملاً آفلاین، بدون تبلیغات و امن
-            - ترجمه به زبان فارسی (Persian Localization)
-            - خروجی بیلد اتوماتیک روی گیت‌هاب (GitHub Actions CI/CD)
+            - **زبان فارسی با ساختار چپ‌چین (LTR):** بدون به هم ریختگی چیدمان، نوار هفته‌ها، جسچرها و نمودارها
+            - **نسخه موبایل (Android APK):** قابل نصب روی انواع گوشی‌های اندرویدی
+            - **نسخه دسکتاپ ویندوز (Windows Desktop App):** فایل فشرده پرتابل؛ بدون نیاز به گوشی مستقیماً روی ویندوز اجرا کنید!
             
-            ### فایل‌های نصبی (APK):
-            - **Streak-Persian-arm64-v8a.apk**: مناسب برای اکثر گوشی‌های اندروید جدید (۶۴ بیتی)
-            - **Streak-Persian-armeabi-v7a.apk**: مناسب برای گوشی‌های قدیمی‌تر (۳۲ بیتی)
-            - **Streak-Persian-x86_64.apk**: مناسب برای شبیه‌سازها و پردازنده‌های اینتل
+            ### فایل‌های دانلودی:
+            - **Streak-Persian-windows-x64.zip**: نسخه پرتابل ویندوز (فقط اکسترکت کنید و Streak.exe را باز کنید!)
+            - **Streak-Persian-arm64-v8a.apk**: مناسب گوشی‌های جدید اندروید
+            - **Streak-Persian-armeabi-v7a.apk**: مناسب گوشی‌های قدیمی اندروید
+            - **Streak-Persian-x86_64.apk**: مناسب شبیه‌سازها
           files: |
-            build/app/outputs/flutter-apk/Streak-Persian-arm64-v8a.apk
-            build/app/outputs/flutter-apk/Streak-Persian-armeabi-v7a.apk
-            build/app/outputs/flutter-apk/Streak-Persian-x86_64.apk
+            release-assets/Streak-Persian-*.apk
+            release-assets/Streak-Persian-windows-x64.zip
