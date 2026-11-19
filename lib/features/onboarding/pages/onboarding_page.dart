@@ -264,7 +264,7 @@ class _Welcome extends StatelessWidget {
     return _Page(
       children: [
         Align(
-          alignment: Alignment.centerLeft,
+          alignment: AlignmentDirectional.centerStart,
           child: DecoratedBox(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(26),
@@ -286,7 +286,7 @@ class _Welcome extends StatelessWidget {
         Text(l10n.onb_kicker.toUpperCase(), style: _kicker(context)),
         const SizedBox(height: 6),
         Text(
-          'Streak',
+          'پناهگاه',
           style: TextStyle(
             fontSize: 46,
             height: 1,
@@ -408,6 +408,7 @@ class _Step extends StatelessWidget {
         const SizedBox(height: 10),
         Text(
           title,
+          textAlign: TextAlign.start,
           style: TextStyle(
             fontSize: 32,
             height: 1.1,
@@ -419,6 +420,7 @@ class _Step extends StatelessWidget {
         const SizedBox(height: 12),
         Text(
           body,
+          textAlign: TextAlign.start,
           style: TextStyle(
             fontSize: 15,
             height: 1.5,
