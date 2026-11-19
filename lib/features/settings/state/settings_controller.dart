@@ -48,10 +48,10 @@ class SettingsController extends ChangeNotifier {
 
   void _load() {
     _themeMode = ThemeMode.values[LocalStore.setting('themeMode', 0)];
-    _weekStart = LocalStore.setting('weekStart', 1);
+    _weekStart = LocalStore.setting('weekStart', 6);
     Habit.weekStart = _weekStart;
     _onboardingDone = LocalStore.setting('onboardingDone', false);
-    _localeCode = LocalStore.setting('locale', '');
+    _localeCode = LocalStore.setting('locale', 'fa');
     _appBackground = LocalStore.setting('appBackground', 2);
     _bgImage = LocalStore.setting('bgImage', '');
     _checkStyle = LocalStore.setting('checkStyle', 0);
