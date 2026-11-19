@@ -12,3 +12,6 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+# The project keystore IS committed on purpose: local debug builds and CI
+# releases must share one signature so updates never need an uninstall.
+!panahgah-key.jks

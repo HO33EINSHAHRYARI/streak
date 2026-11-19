@@ -54,12 +54,27 @@ android {
         }
     }
 
+    signingConfigs {
+        // The committed project keystore (android/panahgah-key.jks). Used for
+        // debug builds and as the release fallback so that local preview runs
+        // and CI releases share one signature — updates install in place.
+        create("panahgah") {
+            storeFile = rootProject.file("panahgah-key.jks")
+            storePassword = "panahgah2026"
+            keyAlias = "panahgah"
+            keyPassword = "panahgah2026"
+        }
+    }
+
     buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("panahgah")
+        }
         release {
             signingConfig = if (keystorePropertiesFile.exists()) {
                 signingConfigs.getByName("release")
             } else {
-                signingConfigs.getByName("debug")
+                signingConfigs.getByName("panahgah")
             }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
