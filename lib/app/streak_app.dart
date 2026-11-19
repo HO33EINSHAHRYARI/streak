@@ -26,7 +26,7 @@ class StreakApp extends StatelessWidget {
     final settings = context.watch<SettingsController>();
 
     return MaterialApp(
-      title: 'Streak',
+      title: 'پناهگاه',
       debugShowCheckedModeBanner: false,
       navigatorKey: AppNavigator.key,
       theme: AppTheme.light(
@@ -47,7 +47,7 @@ class StreakApp extends StatelessWidget {
         );
         final media = MediaQuery.of(context);
         return Directionality(
-          textDirection: TextDirection.ltr,
+          textDirection: TextDirection.rtl,
           child: MediaQuery(
             data: settings.animations
                 ? media
