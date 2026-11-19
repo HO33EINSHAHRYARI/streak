@@ -109,18 +109,17 @@ class TrendChart extends StatelessWidget {
                 touchTooltipData: LineTouchTooltipData(
                   getTooltipColor: (_) => _Chrome.tooltip(context),
                   tooltipRoundedRadius: 10,
-                  getTooltipItems: (spots) => [
-                    for (final spot in spots)
-                      Builder(builder: (ctx) {
-                        final spotDate = startDate.add(Duration(days: spot.x.toInt()));
-                        final isFa = Localizations.localeOf(context).toString().startsWith('fa');
-                        final dateStr = isFa ? spotDate.shamsiShort : format.format(spotDate);
-                        return LineTooltipItem(
-                          '${label(spot.y)}\n$dateStr',
+                  getTooltipItems: (spots) {
+                    final isFa = Localizations.localeOf(context).toString().startsWith('fa');
+                    return [
+                      for (final spot in spots)
+                        LineTooltipItem(
+                          '${label(spot.y)}\n'
+                          '${isFa ? startDate.add(Duration(days: spot.x.toInt())).shamsiShort : format.format(startDate.add(Duration(days: spot.x.toInt())))}',
                           _Chrome.tooltipText(context),
-                        );
-                      }),
-                  ],
+                        ),
+                    ];
+                  },
                 ),
               ),
 
