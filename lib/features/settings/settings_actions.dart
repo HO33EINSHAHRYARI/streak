@@ -647,6 +647,7 @@ class SettingsActions {
   static String languageName(Locale locale) {
     const names = <String, String>{
       'en': 'English',
+      'fa': 'فارسی',
       'es': 'Español',
       'ca': 'Català',
       'zh': '简体中文',
