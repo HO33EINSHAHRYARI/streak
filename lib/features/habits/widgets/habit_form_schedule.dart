@@ -275,7 +275,9 @@ class ScheduleStartRow extends StatelessWidget {
                 ),
               ),
               Text(
-                DateFormat.MMMEd(locale).format(start),
+                locale.startsWith('fa')
+                    ? '${start.shamsiWeekdayName}، ${start.shamsiDay} ${start.shamsiMonthName}'
+                    : DateFormat.MMMEd(locale).format(start),
                 style: TextStyle(
                   color: scheme.primary,
                   fontWeight: FontWeight.w700,
@@ -309,7 +311,9 @@ String scheduleEveryLabel(BuildContext context, int every, ScheduleUnit unit) =>
 
 String monthWeekdayLabel(BuildContext context, DateTime start) {
   final locale = Localizations.localeOf(context).toString();
-  final day = DateFormat.EEEE(locale).format(start);
+  final day = locale.startsWith('fa')
+      ? start.shamsiWeekdayName
+      : DateFormat.EEEE(locale).format(start);
   const slots = ['first', 'second', 'third', 'fourth', 'last'];
   return context.l10n.nth_weekday(slots[(start.day - 1) ~/ 7], day);
 }
