@@ -50,7 +50,7 @@ class MonthLabels {
 
   static List<String> short(String locale) {
     if (locale == 'fa') {
-      return ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
+      return ['فرو', 'ارد', 'خرد', 'تیر', 'مرد', 'شهر', 'مهر', 'آبان', 'آذر', 'دی', 'بهم', 'اسف'];
     }
     return [
       for (final month
