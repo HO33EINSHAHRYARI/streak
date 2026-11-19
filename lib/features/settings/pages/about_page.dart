@@ -17,9 +17,9 @@ import 'package:streak/core/express/express_surface.dart';
 import 'package:streak/core/express/express_type.dart';
 import 'package:streak/core/minimal/minimal_type.dart';
 
-const _kGitHubUrl = 'https://github.com/InlitX/streak';
-const _kProfileUrl = 'https://github.com/InlitX';
-const _kCoffeeUrl = 'https://ko-fi.com/inlitx';
+const _kTelegramUrl = 'https://t.me/Ho33einXD';
+
+
 const _base = Duration(milliseconds: 340);
 
 class AboutPage extends StatefulWidget {
@@ -156,7 +156,7 @@ class _AboutPageState extends State<AboutPage> {
             index: 1,
             delay: _base,
             child: Typewriter(
-              text: 'Streak',
+              text: 'پناهگاه',
               duration: const Duration(milliseconds: 640),
               delay: const Duration(milliseconds: 120),
               style: nameStyle,
@@ -188,24 +188,10 @@ class _AboutPageState extends State<AboutPage> {
           Entrance(
             index: 4,
             delay: _base,
-            child: Row(
-              children: [
-                Expanded(
-                  child: _LinkButton(
-                    icon: LucideIcons.star,
-                    label: 'GitHub',
-                    onTap: () => _open(_kGitHubUrl),
-                  ),
-                ),
-                const SizedBox(width: Express.groupGap),
-                Expanded(
-                  child: _LinkButton(
-                    icon: LucideIcons.coffee,
-                    label: context.l10n.buy_coffee,
-                    onTap: () => _open(_kCoffeeUrl),
-                  ),
-                ),
-              ],
+            child: _LinkButton(
+              icon: LucideIcons.send,
+              label: 'ارتباط و پشتیبانی (@Ho33einXD)',
+              onTap: () => _open(_kTelegramUrl),
             ),
           ),
 
@@ -214,7 +200,7 @@ class _AboutPageState extends State<AboutPage> {
             index: 5,
             delay: _base,
             child: Center(
-              child: _MadeBy(onTap: () => _open(_kProfileUrl)),
+              child: _MadeBy(onTap: () => _open(_kTelegramUrl)),
             ),
           ),
           const SizedBox(height: 10),
@@ -238,7 +224,7 @@ class _AboutPageState extends State<AboutPage> {
             index: 7,
             delay: _base,
             child: GestureDetector(
-              onTap: () => _open('$_kGitHubUrl/blob/main/LICENSE'),
+              onTap: () {},
               child: Text(
                 context.l10n.about_legal,
                 textAlign: TextAlign.center,
@@ -264,43 +250,22 @@ class _MadeBy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = context.colors;
-    final text = context.l10n.made_by;
-    final handle = context.l10n.dev_handle;
-    final start = handle.isEmpty ? -1 : text.indexOf(handle);
-    final style = TextStyle(
-      fontSize: 14,
-      fontWeight: FontWeight.w600,
-      color: scheme.onSurface.withValues(alpha: 0.85),
-    );
-
-    if (start < 0) {
-      return Text(text, textAlign: TextAlign.center, style: style);
-    }
-
     return Semantics(
       link: true,
-      label: handle,
+      label: '@Ho33einXD',
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(8),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(text: text.substring(0, start)),
-                TextSpan(
-                  text: handle,
-                  style: TextStyle(
-                    color: scheme.primary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                TextSpan(text: text.substring(start + handle.length)),
-              ],
-            ),
+          child: Text(
+            'طراحی و توسعه با ❤️ توسط @Ho33einXD',
             textAlign: TextAlign.center,
-            style: style,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: scheme.primary,
+            ),
           ),
         ),
       ),
