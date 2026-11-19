@@ -298,15 +298,23 @@ class GridWeekCard extends StatelessWidget {
                   ),
                 ),
               ),
-              for (var i = columns - 1; i >= 0; i--)
-                _DayCell(
-                  habit: habit,
-                  date: today.addDays(-i),
-                  label: labels[today.addDays(-i).weekday - 1],
-                  circle: circle,
-                  size: _cell,
-                  onTap: onToggleDay,
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (var i = columns - 1; i >= 0; i--)
+                      _DayCell(
+                        habit: habit,
+                        date: today.addDays(-i),
+                        label: labels[today.addDays(-i).weekday - 1],
+                        circle: circle,
+                        size: _cell,
+                        onTap: onToggleDay,
+                      ),
+                  ],
                 ),
+              ),
             ],
           ),
         ),
@@ -622,9 +630,11 @@ class _GridYearStripState extends State<_GridYearStrip> {
       }
     });
 
-    return SingleChildScrollView(
-      controller: _scroll,
-      scrollDirection: Axis.horizontal,
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: SingleChildScrollView(
+        controller: _scroll,
+        scrollDirection: Axis.horizontal,
       child: withHeatmapPath(
         on: path,
         columns: _weeks,
