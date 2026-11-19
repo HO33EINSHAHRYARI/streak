@@ -116,12 +116,15 @@ class YearNavigator extends StatelessWidget {
             onChanged(-1);
           },
         ),
-        SizedBox(
+        Builder(builder: (ctx) {
+          final isFa = Localizations.localeOf(ctx).toString().startsWith('fa');
+          final displayYear = isFa ? (AppClock.now().shamsiYear + (year - AppClock.now().year)) : year;
+          return SizedBox(
           width: 96,
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
-              '$year',
+              '$displayYear',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w800,
@@ -129,7 +132,8 @@ class YearNavigator extends StatelessWidget {
               ),
             ),
           ),
-        ),
+        );
+        }),
         _ArrowButton(
           icon: LucideIcons.chevronRight,
           onTap: canGoForward
