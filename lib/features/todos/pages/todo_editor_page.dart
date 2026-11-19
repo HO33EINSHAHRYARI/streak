@@ -1,3 +1,4 @@
+import 'package:streak/core/widgets/app_date_picker.dart';
 import 'dart:async';
 import 'dart:convert';
 
@@ -395,7 +396,7 @@ class _TodoEditorPageState extends State<TodoEditorPage> with ShortcutHost {
           case 0 || 1:
             _setDate(today.addDays(index));
           case 2:
-            final picked = await showDatePicker(
+            final picked = await showAppDatePicker(
               context: context,
               initialDate: _date.isEmpty ? today : parseDayKey(_date),
               firstDate: DateTime(today.year - 1),
@@ -423,7 +424,7 @@ class _TodoEditorPageState extends State<TodoEditorPage> with ShortcutHost {
   Future<void> _pickTime() async {
     if (_date.isEmpty) {
       final today = AppClock.today();
-      final day = await showDatePicker(
+      final day = await showAppDatePicker(
         context: context,
         initialDate: today,
         firstDate: DateTime(today.year - 1),
