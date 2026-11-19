@@ -28,9 +28,13 @@ Color heatmapCellColor(
   final scheme = context.colors;
   final today = AppClock.today();
   // GitHub-style full grid: every day of the year renders a cell. Logged
-  // days take the habit color, empty days a faint neutral gray, future
-  // days stay neutral (never habit-tinted), and avoid habits show their
-  // clean streak as a whisper of the habit color instead of a solid fill.
+  // days take the habit color, every other day (empty, off-day, before the
+  // habit existed, future) a faint neutral gray, and avoid habits show
+  // their clean streak as a whisper of the habit color within their
+  // lifetime only.
+  if (date.atMidnight.isBefore(habit.startedAt)) {
+    return scheme.surfaceContainerHighest.withValues(alpha: 0.4);
+  }
   final mark = dayMarkOf(habit, date);
   if (mark != null) return mark.fill;
 
@@ -595,13 +599,14 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
     // Label the column whose week CONTAINS the 1st of the month, not the
     // one whose first day starts it — otherwise labels lag up to 6 days
     // behind the boundary and two months read as merged.
+    final months = DateFormat.MMM(locale);
     final monthLabels = <int, String>{};
     for (var col = 0; col < columns; col++) {
       for (var d = 0; d < 7; d++) {
         final day = start.addDays(col * 7 + d);
-        final (_, _, labelJd) = day.jalali;
-        if (labelJd != 1) continue;
-        monthLabels[col] = day.shamsiMonthName;
+        final isMonthStart = fa ? day.jalali.$3 == 1 : day.day == 1;
+        if (!isMonthStart) continue;
+        monthLabels[col] = fa ? day.shamsiMonthName : months.format(day);
         break;
       }
     }

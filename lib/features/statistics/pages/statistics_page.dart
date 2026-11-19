@@ -428,9 +428,7 @@ class _TrendCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final start = AppClock.today().subtract(
-          const Duration(days: HabitStats.window - 1),
-        );
+    final start = AppClock.today().addDays(-(HabitStats.window - 1));
     return StatCard(
       title: context.l10n.streak_evolution,
       icon: LucideIcons.trendingUp,
