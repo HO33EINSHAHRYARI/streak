@@ -123,3 +123,14 @@ flutter:
         - asset: fonts/PlayfairDisplay.ttf
         - asset: fonts/PlayfairDisplay-Italic.ttf
           style: italic
+
+    - family: Peyda
+      fonts:
+        - asset: fonts/Peyda-Regular.ttf
+          weight: 400
+        - asset: fonts/Peyda-Medium.ttf
+          weight: 500
+        - asset: fonts/Peyda-Bold.ttf
+          weight: 700
+        - asset: fonts/Peyda-ExtraBold.ttf
+          weight: 800
