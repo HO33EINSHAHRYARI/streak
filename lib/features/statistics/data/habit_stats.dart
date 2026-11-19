@@ -296,9 +296,11 @@ class HabitStats {
         allDone++;
         if (date.year == today.year && date.month == today.month) monthDone++;
         if (!date.isBefore(weekFloor)) weekDone++;
-        if (date.year != year) continue;
+        final inYear = (date.year == year || date.shamsiYear == (AppClock.now().shamsiYear + (year - AppClock.now().year)));
+        if (!inYear) continue;
         daily[entry.date] = (daily[entry.date] ?? 0) + 1;
-        monthly[date.month - 1]++;
+        final mIdx = date.shamsiMonth - 1;
+        monthly[mIdx.clamp(0, 11)]++;
         weekday[date.weekday - 1]++;
         total++;
         if (entry.hour != null) {
