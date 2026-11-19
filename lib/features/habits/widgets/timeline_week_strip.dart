@@ -497,7 +497,7 @@ class _DayCard extends StatelessWidget {
                     Transform.scale(
                       scale: lerpDouble(1, 16 / 19, fold)!,
                       child: Text(
-                      '${day.day}',
+                      '${day.shamsiDay}',
                       maxLines: 1,
                       style: express
                           ? ExpressType.display.at(
