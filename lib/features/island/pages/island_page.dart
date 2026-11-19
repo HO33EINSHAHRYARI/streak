@@ -469,8 +469,11 @@ class _NextChip extends StatelessWidget {
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(child: IslandThumb(piece: piece, owned: true, size: 38)),
+              // No Expanded here: this chip is measured by a FittedBox,
+              // which passes unbounded height — Expanded cannot resolve.
+              IslandThumb(piece: piece, owned: true, size: 38),
               const SizedBox(height: 2),
               IslandPrice(
                 value: piece.price,
