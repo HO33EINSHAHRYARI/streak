@@ -35,29 +35,92 @@ class AppClock {
   static bool isLogicalToday(DateTime date) => date.isSameDay(now());
 }
 
+DateTime jalaliToDateTime(int jy, int jm, int jd) {
+  const gDaysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  const jDaysInMonth = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29];
+  final jYear = jy - 979;
+  final jMonth = jm - 1;
+  final jDay = jd - 1;
+  var jDayNo = 365 * jYear + (jYear ~/ 33) * 8 + ((jYear % 33 + 3) ~/ 4);
+  for (var i = 0; i < jMonth; i++) {
+    jDayNo += jDaysInMonth[i];
+  }
+  jDayNo += jDay;
+
+  var gDayNo = jDayNo + 79;
+  var gy = 1600 + 400 * (gDayNo ~/ 146097);
+  gDayNo %= 146097;
+  var leap = true;
+  if (gDayNo >= 36525) {
+    gDayNo -= 1;
+    gy += 100 * (gDayNo ~/ 36524);
+    gDayNo %= 36524;
+    if (gDayNo >= 365) {
+      gDayNo += 1;
+    } else {
+      leap = false;
+    }
+  }
+  gy += 4 * (gDayNo ~/ 1461);
+  gDayNo %= 1461;
+  if (gDayNo >= 366) {
+    leap = false;
+    gDayNo -= 1;
+    gy += gDayNo ~/ 365;
+    gDayNo %= 365;
+  }
+
+  for (var i = 0; i < 12; i++) {
+    final dim = gDaysInMonth[i] + (i == 1 && leap ? 1 : 0);
+    if (gDayNo < dim) {
+      return DateTime(gy, i + 1, gDayNo + 1);
+    }
+    gDayNo -= dim;
+  }
+  return DateTime(gy, 12, gDayNo + 1);
+}
+
+int jalaliDaysInMonth(int jy, int jm) {
+  if (jm <= 6) return 31;
+  if (jm <= 11) return 30;
+  final d1 = jalaliToDateTime(jy, 1, 1);
+  final d2 = jalaliToDateTime(jy + 1, 1, 1);
+  return d2.difference(d1).inDays == 366 ? 30 : 29;
+}
+
 extension DateOnly on DateTime {
   (int, int, int) get jalali {
-    const gDaysInMonth = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
-    final gy2 = (month > 2) ? (year - 1600) : (year - 1601);
-    var days = 365 * gy2 + ((gy2 + 4) ~/ 4) - ((gy2 + 99) ~/ 100) + ((gy2 + 399) ~/ 400) - 80 + day + gDaysInMonth[month - 1];
-    var jy = 979 + 33 * (days ~/ 12053);
-    days %= 12053;
-    jy += 4 * (days ~/ 1461);
-    days %= 1461;
-    if (days > 365) {
-      jy += (days - 1) ~/ 365;
-      days = (days - 1) % 365;
+    const gDaysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    const jDaysInMonth = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29];
+    final gy = year - 1600;
+    final gm = month - 1;
+    final gd = day - 1;
+    var gDayNo = 365 * gy + ((gy + 3) ~/ 4) - ((gy + 99) ~/ 100) + ((gy + 399) ~/ 400);
+    for (var i = 0; i < gm; i++) {
+      gDayNo += gDaysInMonth[i];
     }
-    final int jm;
-    final int jd;
-    if (days < 186) {
-      jm = 1 + (days ~/ 31);
-      jd = 1 + (days % 31);
-    } else {
-      jm = 7 + ((days - 186) ~/ 30);
-      jd = 1 + ((days - 186) % 30);
+    if (gm > 1 && ((gy % 4 == 0 && gy % 100 != 0) || (gy % 400 == 0))) {
+      gDayNo += 1;
     }
-    return (jy, jm, jd);
+    gDayNo += gd;
+
+    var jDayNo = gDayNo - 79;
+    final jNp = jDayNo ~/ 12053;
+    jDayNo %= 12053;
+    var jy = 979 + 33 * jNp + 4 * (jDayNo ~/ 1461);
+    jDayNo %= 1461;
+    if (jDayNo >= 366) {
+      jy += (jDayNo - 1) ~/ 365;
+      jDayNo = (jDayNo - 1) % 365;
+    }
+
+    for (var i = 0; i < 11; i++) {
+      if (jDayNo < jDaysInMonth[i]) {
+        return (jy, i + 1, jDayNo + 1);
+      }
+      jDayNo -= jDaysInMonth[i];
+    }
+    return (jy, 12, jDayNo + 1);
   }
 
   static const jalaliWeekdayNames = [
