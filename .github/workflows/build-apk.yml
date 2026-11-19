@@ -8,7 +8,7 @@ on:
       tag:
         description: 'Release tag'
         required: false
-        default: 'v2.10.4-fa'
+        default: 'v2.10.5-fa'
         type: string
 
 permissions:
@@ -75,10 +75,10 @@ jobs:
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.tag || 'v2.10.4-fa' }}
-          name: 'پناهگاه (Panahgah) - نسخه فارسی اندروید v2.10.4'
+          tag_name: ${{ github.event.inputs.tag || 'v2.10.5-fa' }}
+          name: 'پناهگاه (Panahgah) - نسخه فارسی اندروید v2.10.5'
           body: |
-            ## نسخه نهایی پناهگاه (Panahgah) نسخه v2.10.4 📱
+            ## نسخه نهایی پناهگاه (Panahgah) نسخه v2.10.5 📱
             
             - **اصلاح کامل منوی پایین در حالت راست‌چین (RTL):** عملکرد دقیق و بدون خطای لمس و جابه‌جایی تب‌ها
             - **اصلاح جهت فلش‌ها در بخش تنظیمات:** جهت فلش‌ها به سمت چپ مطابق با اصول طراحی راست‌چین
