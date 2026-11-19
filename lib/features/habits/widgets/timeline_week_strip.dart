@@ -113,6 +113,14 @@ class _TimelineWeekStripState extends State<TimelineWeekStrip>
   }
 
   String _range(String locale) {
+    if (locale.startsWith('fa')) {
+      if (widget.month) {
+        return '${widget.selected.shamsiWeekdayName}، ${widget.selected.shamsiDay} ${widget.selected.shamsiMonthName}';
+      }
+      final first = widget.first;
+      final last = first.addDays(6);
+      return '${first.shamsiDay} ${first.shamsiMonthName} - ${last.shamsiDay} ${last.shamsiMonthName}';
+    }
     if (widget.month) return DateFormat.MMMMEEEEd(locale).format(widget.selected);
     final format = DateFormat.MMMd(locale);
     final first = widget.first;
