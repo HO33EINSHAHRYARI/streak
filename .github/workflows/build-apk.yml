@@ -1,4 +1,4 @@
-name: Build & Release Persian APK and Windows
+name: Build & Release Persian APK
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
       tag:
         description: 'Release tag'
         required: false
-        default: 'v2.10.3-fa'
+        default: 'v2.10.4-fa'
         type: string
 
 permissions:
@@ -60,66 +60,35 @@ jobs:
           path: build/app/outputs/flutter-apk/Streak-Persian-*.apk
           if-no-files-found: error
 
-  build-windows:
-    name: Build Persian Windows App
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Build Windows
-        run: flutter build windows --release
-
-      - name: Zip the build
-        run: Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath Streak-Persian-windows-x64.zip
-
-      - name: Upload Windows Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: streak-persian-windows
-          path: Streak-Persian-windows-x64.zip
-          if-no-files-found: error
-
   release:
     name: Publish GitHub Release
-    needs: [build-apk, build-windows]
+    needs: [build-apk]
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download all artifacts
+      - name: Download APK artifacts
         uses: actions/download-artifact@v4
         with:
+          name: streak-persian-apks
           path: release-assets
-          merge-multiple: true
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.tag || 'v2.10.3-fa' }}
-          name: 'پناهگاه (Panahgah) - ردیاب عادات و پیوستگی فردی نسخه v2.10.3'
+          tag_name: ${{ github.event.inputs.tag || 'v2.10.4-fa' }}
+          name: 'پناهگاه (Panahgah) - نسخه فارسی اندروید v2.10.4'
           body: |
-            ## نسخه نهایی Streak فارسی با فونت پیدا و تقویم شمسی 🚀\n\n- **ترجمه ۱۰۰٪ کامل فارسی تمامی بخش‌ها (از اینترو تا درباره ما)**\n- **فونت فارسی پیدا (Peyda)**\n- **تقویم و تاریخ شمسی (Jalali)**\n- **شروع هفته از روز شنبه به صورت پیش‌فرض**\n- **چیدمان استاندارد بدون باگ راست‌چین**
+            ## نسخه نهایی پناهگاه (Panahgah) نسخه v2.10.4 📱
             
-            - **زبان فارسی با ساختار چپ‌چین (LTR):** بدون به هم ریختگی چیدمان، نوار هفته‌ها، جسچرها و نمودارها
-            - **نسخه موبایل (Android APK):** قابل نصب روی انواع گوشی‌های اندرویدی
-            - **نسخه دسکتاپ ویندوز (Windows Desktop App):** فایل فشرده پرتابل؛ بدون نیاز به گوشی مستقیماً روی ویندوز اجرا کنید!
+            - **اصلاح کامل منوی پایین در حالت راست‌چین (RTL):** عملکرد دقیق و بدون خطای لمس و جابه‌جایی تب‌ها
+            - **اصلاح جهت فلش‌ها در بخش تنظیمات:** جهت فلش‌ها به سمت چپ مطابق با اصول طراحی راست‌چین
+            - **تقویم و تاریخ شمسی در تمامی بخش‌ها و فرم افزودن عادات جدید**
+            - **برند اختصاصی پناهگاه با آیکون و پروفایل جدید**
+            - **خروجی اختصاصی اندروید با سرعت اجرای فوق‌العاده**
             
             ### فایل‌های دانلودی:
-            - **Streak-Persian-windows-x64.zip**: نسخه پرتابل ویندوز (فقط اکسترکت کنید و Streak.exe را باز کنید!)
-            - **Streak-Persian-arm64-v8a.apk**: مناسب گوشی‌های جدید اندروید
-            - **Streak-Persian-armeabi-v7a.apk**: مناسب گوشی‌های قدیمی اندروید
+            - **Streak-Persian-arm64-v8a.apk**: مناسب گوشی‌های جدید ۶۴ بیتی (بیش از ۹۰٪ دستگاه‌ها)
+            - **Streak-Persian-armeabi-v7a.apk**: مناسب گوشی‌های قدیمی ۳۲ بیتی
             - **Streak-Persian-x86_64.apk**: مناسب شبیه‌سازها
           files: |
             release-assets/Streak-Persian-*.apk
-            release-assets/Streak-Persian-windows-x64.zip
