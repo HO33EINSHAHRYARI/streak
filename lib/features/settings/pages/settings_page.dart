@@ -106,14 +106,7 @@ class ClassicSettingsPage extends StatelessWidget {
                     subtitle: context.l10n.data_sub,
                     onTap: () => AppNavigator.push(const _ClassicDataPage()),
                   ),
-                  settingsDivider(context),
-                  NavRow(
-                    icon: LucideIcons.heartHandshake,
-                    title: context.l10n.support,
-                    subtitle: context.l10n.support_sub,
-                    onTap: () =>
-                        AppNavigator.push(const _ClassicSupportPage()),
-                  ),
+
                 ],
               ),
             ),
