@@ -40,6 +40,7 @@ class _ClassicNavBarState extends State<ClassicNavBar>
   late final AnimationController _fold;
   double _slot = 72;
   double _height = _tall;
+  double _width = 0;
 
   @override
   void initState() {
@@ -87,8 +88,12 @@ class _ClassicNavBarState extends State<ClassicNavBar>
         SpringSimulation(_spring, _lens.value, index.toDouble(), _lens.velocity),
       );
 
-  double _at(Offset local) =>
-      ((local.dx - _pad) / _slot - 0.5).clamp(0, widget.items.length - 1);
+  double _at(Offset local) {
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    final totalWidth = _width > 0 ? _width : (_pad * 2 + _slot * widget.items.length);
+    final dx = rtl ? (totalWidth - local.dx) : local.dx;
+    return ((dx - _pad) / _slot - 0.5).clamp(0, widget.items.length - 1);
+  }
 
   void _hold(LongPressStartDetails details) {
     _press.forward();
@@ -130,6 +135,7 @@ class _ClassicNavBarState extends State<ClassicNavBar>
         _slot = full * lerpDouble(1, 0.8, fold)!;
         _height = lerpDouble(_tall, _short, fold)!;
         final width = _slot * count + _pad * 2;
+        _width = width;
 
         return RawGestureDetector(
           behavior: HitTestBehavior.opaque,
@@ -194,12 +200,14 @@ class _ClassicNavBarState extends State<ClassicNavBar>
                           (_lens.velocity.abs() / 14).clamp(0.0, 0.28);
                       final lensWidth = _slot * (1 + stretch + 0.1 * press);
                       final lensHeight = _height - _pad * 2 + 6 * press;
+                      final rtl = Directionality.of(context) == TextDirection.rtl;
                       final centre = _pad + _slot * (_lens.value + 0.5);
                       return Stack(
                         clipBehavior: Clip.none,
                         children: [
                           Positioned(
-                            left: centre - lensWidth / 2,
+                            left: rtl ? null : centre - lensWidth / 2,
+                            right: rtl ? centre - lensWidth / 2 : null,
                             top: (_height - lensHeight) / 2,
                             width: lensWidth,
                             height: lensHeight,
