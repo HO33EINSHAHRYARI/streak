@@ -55,7 +55,7 @@ class SettingsController extends ChangeNotifier {
     _appBackground = LocalStore.setting('appBackground', 2);
     _bgImage = LocalStore.setting('bgImage', '');
     _checkStyle = LocalStore.setting('checkStyle', 0);
-    _profileName = LocalStore.setting('profileName', '');
+    _profileName = LocalStore.setting('profileName', 'panahgah');
     _currency = LocalStore.setting('currency', defaultCurrencySymbol());
     _vacationAll = LocalStore.setting('vacationAll', false);
     _vacationAllIds =
