@@ -136,8 +136,9 @@ class _YearHeatmapState extends State<YearHeatmap> {
             children: List.generate(columns, (col) {
               final colDate = start.addDays(col * 7);
               final prevDate = start.addDays((col - 1) * 7);
-                      final isNewMonth = (rolling || _wholeHistory || colDate.year == widget.year) &&
-                  (col == 0 || colDate.month != prevDate.month);
+              final isFa = locale.startsWith('fa');
+              final isNewMonth = (rolling || _wholeHistory || (isFa ? colDate.shamsiYear == (widget.year == AppClock.now().year ? AppClock.now().shamsiYear : widget.year) : colDate.year == widget.year)) &&
+                  (col == 0 || (isFa ? colDate.shamsiMonth != prevDate.shamsiMonth : colDate.month != prevDate.month));
               return Padding(
                 padding: const EdgeInsets.only(right: _gap),
                 child: Column(
@@ -148,13 +149,17 @@ class _YearHeatmapState extends State<YearHeatmap> {
                       width: _cell,
                       child: isNewMonth
                           ? OverflowBox(
-                              maxWidth: 40,
+                              maxWidth: 55,
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                (_wholeHistory && colDate.month == 1
-                                    ? DateFormat('MMM yy', locale)
-                                    : DateFormat.MMM(locale))
-                                    .format(colDate),
+                                isFa
+                                    ? (_wholeHistory && colDate.shamsiMonth == 1
+                                        ? '${colDate.shamsiMonthName} ${colDate.shamsiYear % 100}'
+                                        : colDate.shamsiMonthName)
+                                    : (_wholeHistory && colDate.month == 1
+                                        ? DateFormat('MMM yy', locale)
+                                        : DateFormat.MMM(locale))
+                                        .format(colDate),
                                 textScaler: MediaQuery.textScalerOf(context)
                                     .clamp(maxScaleFactor: 1.2),
                                 style: TextStyle(
