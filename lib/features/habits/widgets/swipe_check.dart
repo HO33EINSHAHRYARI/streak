@@ -56,7 +56,9 @@ class _SwipeCheckState extends State<SwipeCheck>
   }
 
   void _drag(DragUpdateDetails details) {
-    final next = _offset.value + details.primaryDelta! / _width;
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    final factor = rtl ? -1.0 : 1.0;
+    final next = _offset.value + (details.primaryDelta! * factor) / _width;
     final along = (next * _direction).clamp(0.0, 0.6);
     _offset.value = along * _direction;
   }
@@ -130,7 +132,7 @@ class _Reveal extends StatelessWidget {
         color: tint.withValues(alpha: armed ? 0.3 : 0.14),
       ),
       child: Align(
-        alignment: done ? Alignment.centerLeft : Alignment.centerRight,
+        alignment: done ? AlignmentDirectional.centerStart : AlignmentDirectional.centerEnd,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: AnimatedScale(
