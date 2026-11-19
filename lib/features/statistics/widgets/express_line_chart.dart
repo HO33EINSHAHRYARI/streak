@@ -76,9 +76,7 @@ class _ExpressLineChartState extends State<ExpressLineChart>
 
   void _release(DragEndDetails details) {
     if (!_scrolls) return;
-    _fling = details.velocity.pixelsPerSecond.dx /
-        90 *
-        (Directionality.of(context) == TextDirection.rtl ? -1 : 1);
+    _fling = details.velocity.pixelsPerSecond.dx / 90;
     if (_fling.abs() < 1) return;
     _glide
       ..duration = const Duration(milliseconds: 420)
@@ -89,10 +87,6 @@ class _ExpressLineChartState extends State<ExpressLineChart>
   Widget build(BuildContext context) {
     final values = widget.values;
     if (values.isEmpty) return SizedBox(height: widget.height);
-    // Time flows right-to-left in RTL; mirror the whole windowed chart.
-    final rtl = Directionality.of(context) == TextDirection.rtl;
-    int toVisual(int i) => rtl ? values.length - 1 - i : i;
-    int toLogical(int x) => rtl ? values.length - 1 - x : x;
 
     final color = widget.color;
     final format = widget.format ?? (double v) => '${v.round()}';
@@ -105,12 +99,8 @@ class _ExpressLineChartState extends State<ExpressLineChart>
       headroom: 0.35,
       whole: widget.format == null && widget.axisFormat == null,
     );
-    final minX = rtl
-        ? (values.length - _start - _span).toDouble()
-        : _start.toDouble();
-    final maxX = rtl
-        ? (values.length - 1 - _start).toDouble()
-        : _start + _span - 1;
+    final minX = _start.toDouble();
+    final maxX = _start + _span - 1;
     final onColor = color.computeLuminance() > 0.5
         ? Colors.black
         : Colors.white;
@@ -119,8 +109,7 @@ class _ExpressLineChartState extends State<ExpressLineChart>
       height: widget.height,
       child: GestureDetector(
         onHorizontalDragStart: (_) => _glide.stop(),
-        onHorizontalDragUpdate: (details) =>
-            _pan((details.primaryDelta ?? 0) * (rtl ? -1 : 1)),
+        onHorizontalDragUpdate: (details) => _pan(details.primaryDelta ?? 0),
         onHorizontalDragEnd: _release,
         child: LineChart(
           duration: Express.morph,
@@ -201,7 +190,7 @@ class _ExpressLineChartState extends State<ExpressLineChart>
                       ),
                       children: [
                         TextSpan(
-                          text: '\n${widget.label(toLogical(spot.x.round()))}',
+                          text: '\n${widget.label(spot.x.round())}',
                           style: ExpressType.body.at(
                             11.5,
                             weight: 700,
@@ -217,7 +206,7 @@ class _ExpressLineChartState extends State<ExpressLineChart>
               LineChartBarData(
                 spots: [
                   for (var i = 0; i < values.length; i++)
-                    FlSpot(toVisual(i).toDouble(), values[i]),
+                    FlSpot(i.toDouble(), values[i]),
                 ],
                 isCurved: true,
                 curveSmoothness: 0.2,
@@ -262,10 +251,7 @@ class _ExpressLineChartState extends State<ExpressLineChart>
       return const SizedBox.shrink();
     }
     if ((value - index).abs() > 0.01) return const SizedBox.shrink();
-    final logical = Directionality.of(context) == TextDirection.rtl
-        ? widget.values.length - 1 - index
-        : index;
-    final sub = widget.subLabel?.call(logical);
+    final sub = widget.subLabel?.call(index);
     final muted = context.tokens.muted;
 
     return MediaQuery.withClampedTextScaling(
@@ -276,7 +262,7 @@ class _ExpressLineChartState extends State<ExpressLineChart>
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              widget.label(logical),
+              widget.label(index),
               maxLines: 1,
               style: ExpressType.body.at(
                 11,

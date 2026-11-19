@@ -27,24 +27,24 @@ Color heatmapCellColor(
 
   final scheme = context.colors;
   final today = AppClock.today();
-  // Days before the habit existed and days in the future carry no signal:
-  // keep them fully transparent instead of shading the whole grid.
-  if (date.isAfter(today)) return Colors.transparent;
+  // Days before the habit existed carry no signal: keep them empty so a
+  // fresh habit's grid starts at its creation, GitHub-style. Future days
+  // stay visible but neutral so the grid keeps its full shape.
   final beforeCreation = date.atMidnight.isBefore(habit.startedAt);
   if (beforeCreation) return Colors.transparent;
   final mark = dayMarkOf(habit, date);
   if (mark != null) return mark.fill;
 
-  if (!beforeCreation && !date.isAfter(today) && habit.isNeutralOn(date)) {
+  if (habit.isNeutralOn(date)) {
     return context.tokens.info.withValues(alpha: 0.5);
   }
 
   if (habit.kind == HabitKind.negative) {
-    if (beforeCreation) {
+    final clean = habit.color.shownIn(context).withValues(alpha: 0.4);
+    if (date.isAfter(today)) {
+      // Future stays neutral so tomorrow is never habit-tinted.
       return scheme.surfaceContainerHighest.withValues(alpha: 0.4);
     }
-    final clean = habit.color.shownIn(context).withValues(alpha: 0.4);
-    if (date.isAfter(today)) return clean.withValues(alpha: 0.18);
     if (habit.completions.containsKey(date.dayKey)) return context.tokens.danger;
     return clean;
   }
