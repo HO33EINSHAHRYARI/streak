@@ -1,3 +1,4 @@
+import 'dart:ui' as ui;
 import 'dart:async';
 
 import 'package:flutter/foundation.dart' show listEquals;
@@ -299,7 +300,7 @@ class GridWeekCard extends StatelessWidget {
                 ),
               ),
               Directionality(
-                textDirection: TextDirection.ltr,
+                textDirection: ui.TextDirection.ltr,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -631,7 +632,7 @@ class _GridYearStripState extends State<_GridYearStrip> {
     });
 
     return Directionality(
-      textDirection: TextDirection.ltr,
+      textDirection: ui.TextDirection.ltr,
       child: SingleChildScrollView(
         controller: _scroll,
         scrollDirection: Axis.horizontal,
@@ -703,6 +704,7 @@ class _GridYearStripState extends State<_GridYearStrip> {
     );
   }
 }
+    );
 
 class _YearCells extends CustomPainter {
   const _YearCells({
