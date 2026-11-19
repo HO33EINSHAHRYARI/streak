@@ -1,3 +1,4 @@
+import 'package:streak/core/extensions/date_extensions.dart';
 import 'package:flutter/material.dart';
 
 class DayStamp extends StatelessWidget {
@@ -21,7 +22,7 @@ class DayStamp extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          '${date.day}',
+          '${date.shamsiDay}',
           maxLines: 1,
           style: TextStyle(
             fontSize: compact ? 13 : 14.5,
