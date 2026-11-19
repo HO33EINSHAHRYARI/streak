@@ -136,7 +136,7 @@ class _Day extends StatelessWidget {
     final complete = due > 0 && done >= due;
     final ratio = due == 0 ? 0.0 : (done / due).clamp(0.0, 1.0);
     final locale = Localizations.localeOf(context).toString();
-    final name = DateFormat.MMMMEEEEd(locale).format(day);
+    final name = day.shamsiShort;
 
     return Semantics(
       button: !future,
@@ -173,7 +173,7 @@ class _Day extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                            '${day.day}',
+                            '${day.shamsiDay}',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: isToday || complete
