@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
@@ -98,7 +99,7 @@ Future<void> showDayActionsSheet(
                 badge: count > 0 ? '$count' : null,
                 accent: habit.color.shownIn(context),
                 highlighted: true,
-                trailing: LucideIcons.chevronRight,
+                trailing: chevronForward(context),
                 onTap: () {
                   Navigator.of(sheet).pop();
                   AppNavigator.push(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/express/express_button.dart';
@@ -9,6 +9,7 @@ import 'package:streak/core/express/express_streak_paint.dart';
 import 'package:streak/core/express/express_surface.dart';
 import 'package:streak/core/express/express_type.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/i18n/date_labels.dart';
 import 'package:streak/features/habits/data/habit.dart';
 import 'package:streak/features/habits/widgets/day_marks.dart';
@@ -64,12 +65,34 @@ class _ExpressMonthCalendarState extends State<ExpressMonthCalendar>
     });
   }
 
+  bool _fa(BuildContext context) =>
+      AppDates.isFa(Localizations.localeOf(context).toString());
+
   void _shift(int by) {
-    setState(() => _month = DateTime(_month.year, _month.month + by));
+    setState(() {
+      if (_fa(context)) {
+        var (jy, jm) = AppDates.jalaliYearMonth(_month);
+        jm += by;
+        if (jm > 12) {
+          jm = 1;
+          jy++;
+        } else if (jm < 1) {
+          jm = 12;
+          jy--;
+        }
+        _month = jalaliToDateTime(jy, jm, 1);
+      } else {
+        _month = DateTime(_month.year, _month.month + by);
+      }
+    });
   }
 
-  ExpressDayState _stateOf(DateTime date) {
-    if (date.month != _month.month) return ExpressDayState.blank;
+  ExpressDayState _stateOf(DateTime date, {bool? fa}) {
+    final inFa = fa ?? _fa(context);
+    final inMonth = inFa
+        ? AppDates.sameJalaliMonth(date, _month)
+        : date.month == _month.month;
+    if (!inMonth) return ExpressDayState.blank;
     if (date.isAfter(_today)) return ExpressDayState.future;
     if (widget.habit.isRelapseOn(date)) return ExpressDayState.relapse;
     if (widget.habit.isCompletedOn(date)) return ExpressDayState.done;
@@ -85,18 +108,33 @@ class _ExpressMonthCalendarState extends State<ExpressMonthCalendar>
   Widget build(BuildContext context) {
     final scheme = context.colors;
     final locale = Localizations.localeOf(context);
+    final fa = _fa(context);
     final weekStart = context.watch<SettingsController>().weekStart;
-    final first = DateTime(_month.year, _month.month);
+    final first = fa
+        ? AppDates.jalaliMonthStart(_month)
+        : DateTime(_month.year, _month.month);
     final offset = first.epochDay - first.startOfWeek(weekStart).epochDay;
-    final length = DateTime(_month.year, _month.month + 1, 0).day;
+    final length = fa
+        ? jalaliDaysInMonth(_month.shamsiYear, _month.shamsiMonth)
+        : DateTime(_month.year, _month.month + 1, 0).day;
     final weeks = ((offset + length) / 7).ceil();
     final start = first.startOfWeek(weekStart);
     final days = List.generate(weeks * 7, (i) => start.addDays(i));
-    final states = [for (final date in days) _stateOf(date)];
+    final states = [for (final date in days) _stateOf(date, fa: fa)];
     _replay(states.map((s) => s.index).join());
 
-    final atCurrent =
-        _month.year == _today.year && _month.month == _today.month;
+    final atCurrent = fa
+        ? _month.shamsiYear == _today.shamsiYear &&
+            _month.shamsiMonth == _today.shamsiMonth
+        : _month.year == _today.year && _month.month == _today.month;
+    final title = fa
+        ? (_month.shamsiYear == _today.shamsiYear
+            ? _month.shamsiMonthName
+            : '${_month.shamsiMonthName} ${_month.shamsiYear}')
+        : DateFormat(
+            _month.year == _today.year ? 'MMMM' : 'MMMM yyyy',
+            locale.toString(),
+          ).format(_month);
     final ink = expressInk(context, widget.habit.color.shownIn(context));
 
     return ExpressCard(
@@ -106,16 +144,13 @@ class _ExpressMonthCalendarState extends State<ExpressMonthCalendar>
           Row(
             children: [
               ExpressIconButton(
-                icon: LucideIcons.chevronLeft,
+                icon: chevronBack(context),
                 size: 38,
                 onPressed: () => _shift(-1),
               ),
               Expanded(
                 child: Text(
-                  DateFormat(
-                    _month.year == _today.year ? 'MMMM' : 'MMMM yyyy',
-                    locale.toString(),
-                  ).format(_month),
+                  title,
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -127,7 +162,7 @@ class _ExpressMonthCalendarState extends State<ExpressMonthCalendar>
                 ),
               ),
               ExpressIconButton(
-                icon: LucideIcons.chevronRight,
+                icon: chevronForward(context),
                 size: 38,
                 onPressed: atCurrent ? null : () => _shift(1),
               ),
@@ -178,6 +213,7 @@ class _ExpressMonthCalendarState extends State<ExpressMonthCalendar>
                                 date: days[week * 7 + day],
                                 state: states[week * 7 + day],
                                 isToday: days[week * 7 + day] == _today,
+                                fa: fa,
                                 showNotes: widget.showNotes,
                                 onToggle: widget.onToggle,
                                 onLongPress: widget.onLongPress,
@@ -204,15 +240,23 @@ class ExpressMonthStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final weekStart = context.watch<SettingsController>().weekStart;
+    final fa = AppDates.isFa(Localizations.localeOf(context).toString());
     final today = AppClock.today();
-    final first = DateTime(today.year, today.month);
+    final first = fa
+        ? AppDates.jalaliMonthStart(today)
+        : DateTime(today.year, today.month);
     final offset = first.epochDay - first.startOfWeek(weekStart).epochDay;
-    final length = DateTime(today.year, today.month + 1, 0).day;
+    final length = fa
+        ? jalaliDaysInMonth(today.shamsiYear, today.shamsiMonth)
+        : DateTime(today.year, today.month + 1, 0).day;
     final weeks = ((offset + length) / 7).ceil();
     final start = first.startOfWeek(weekStart);
 
     ExpressDayState stateOf(DateTime date) {
-      if (date.month != today.month) return ExpressDayState.blank;
+      final inMonth = fa
+          ? AppDates.sameJalaliMonth(date, today)
+          : date.month == today.month;
+      if (!inMonth) return ExpressDayState.blank;
       if (date.isAfter(today)) return ExpressDayState.future;
       if (habit.isRelapseOn(date)) return ExpressDayState.relapse;
       if (habit.isCompletedOn(date)) return ExpressDayState.done;
@@ -254,6 +298,7 @@ class _MonthCell extends StatelessWidget {
     required this.date,
     required this.state,
     required this.isToday,
+    required this.fa,
     required this.showNotes,
     required this.onToggle,
     required this.onLongPress,
@@ -263,6 +308,7 @@ class _MonthCell extends StatelessWidget {
   final DateTime date;
   final ExpressDayState state;
   final bool isToday;
+  final bool fa;
   final bool showNotes;
   final void Function(DateTime date) onToggle;
   final void Function(DateTime date)? onLongPress;
@@ -300,7 +346,7 @@ class _MonthCell extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                '${date.day}',
+                fa ? '${date.shamsiDay}' : '${date.day}',
                 style: ExpressType.rounded.at(
                   14,
                   weight: done || relapse || isToday ? 850 : 650,

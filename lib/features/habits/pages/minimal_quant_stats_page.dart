@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:streak/features/habits/widgets/avoid_stats.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/extensions/inset_extensions.dart';
 import 'package:streak/core/i18n/l10n.dart';
 import 'package:streak/core/minimal/minimal_kit.dart';
@@ -36,6 +38,7 @@ class _MinimalQuantStatsPageState extends State<MinimalQuantStatsPage> {
       range: _range,
       now: AppClock.now(),
       weekStart: context.watch<SettingsController>().weekStart,
+      jalali: AppDates.isFa(Localizations.localeOf(context).toString()),
     );
     final totals = stats.totals;
 
@@ -43,7 +46,7 @@ class _MinimalQuantStatsPageState extends State<MinimalQuantStatsPage> {
       appBar: AppBar(
         toolbarHeight: 52,
         leading: IconButton(
-          icon: const Icon(LucideIcons.chevronLeft),
+          icon: Icon(chevronBack(context)),
           onPressed: () => AppNavigator.pop(),
         ),
       ),

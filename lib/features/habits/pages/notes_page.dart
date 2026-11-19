@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_theme.dart';
 import 'package:streak/app/theme/app_tokens.dart';
@@ -64,12 +65,12 @@ class NotesPage extends StatelessWidget {
             ? Padding(
                 padding: const EdgeInsets.only(left: 16),
                 child: Center(child: ExpressIconButton(
-                  icon: LucideIcons.arrowLeft,
+                  icon: arrowBack(context),
                   onPressed: () => AppNavigator.pop(),
                 )),
               )
             : IconButton(
-                icon: const Icon(LucideIcons.arrowLeft),
+                icon: Icon(arrowBack(context)),
                 onPressed: () => AppNavigator.pop(),
               ),
         title: express || minimal

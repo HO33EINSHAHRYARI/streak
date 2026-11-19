@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/color_extensions.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
@@ -126,7 +127,7 @@ class FocusHabitCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 4),
-                    Icon(LucideIcons.chevronRight, size: 16, color: muted),
+                    Icon(chevronForward(context), size: 16, color: muted),
                   ],
                 ),
               ),

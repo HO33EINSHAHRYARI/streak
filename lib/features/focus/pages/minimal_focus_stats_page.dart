@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/color_extensions.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
 import 'package:streak/core/extensions/inset_extensions.dart';
 import 'package:streak/core/i18n/l10n.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/minimal/minimal_kit.dart';
 import 'package:streak/core/routing/app_navigator.dart';
 import 'package:streak/core/widgets/app_empty_state.dart';
@@ -48,6 +50,7 @@ class _MinimalFocusStatsPageState extends State<MinimalFocusStatsPage> {
       now: AppClock.now(),
       weekStart: context.watch<SettingsController>().weekStart,
       habitId: widget.habitId,
+      jalali: AppDates.isFa(Localizations.localeOf(context).toString()),
     );
 
     final ranked = [
@@ -65,7 +68,7 @@ class _MinimalFocusStatsPageState extends State<MinimalFocusStatsPage> {
       appBar: AppBar(
         toolbarHeight: 52,
         leading: IconButton(
-          icon: const Icon(LucideIcons.chevronLeft),
+          icon: Icon(chevronBack(context)),
           onPressed: () => AppNavigator.pop(),
         ),
         actions: [

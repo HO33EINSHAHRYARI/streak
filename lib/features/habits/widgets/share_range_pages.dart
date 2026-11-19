@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
 import 'package:streak/core/i18n/date_labels.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/features/habits/widgets/day_marks.dart';
 import 'package:streak/features/habits/data/habit.dart';
 import 'package:streak/core/icons/habit_glyph.dart';
@@ -109,8 +110,10 @@ class ShareMonthPage extends StatelessWidget {
       children: [
         SharePanelHeader(
           habit: habit,
-          title: DateFormat.MMMM(locale).format(month),
-          subtitle: '${month.year}',
+          title: AppDates.isFa(locale)
+              ? month.shamsiMonthName
+              : DateFormat.MMMM(locale).format(month),
+          subtitle: '${AppDates.isFa(locale) ? month.shamsiYear : month.year}',
           width: width,
         ),
         SizedBox(height: width * 0.04),
@@ -214,9 +217,10 @@ class ShareWeekPage extends StatelessWidget {
       children: [
         SharePanelHeader(
           habit: habit,
-          title: '${start.day} – ${end.day} '
-              '${DateFormat.MMM(locale).format(end)}',
-          subtitle: '${end.year}',
+          title: AppDates.isFa(locale)
+              ? '${start.shamsiDay} – ${end.shamsiDay} ${end.shamsiMonthName}'
+              : '${start.day} – ${end.day} ${DateFormat.MMM(locale).format(end)}',
+          subtitle: '${AppDates.isFa(locale) ? end.shamsiYear : end.year}',
           width: width,
         ),
         SizedBox(height: width * 0.04),

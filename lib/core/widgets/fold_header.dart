@@ -17,6 +17,7 @@ class FoldHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final muted = context.tokens.muted;
+    final rtl = Directionality.of(context) == TextDirection.rtl;
     return Semantics(
       button: true,
       expanded: expanded,
@@ -28,9 +29,15 @@ class FoldHeader extends StatelessWidget {
           child: Row(
             children: [
               AnimatedRotation(
-                turns: expanded ? 0.25 : 0,
+                // Collapsed points along the reading direction; a quarter
+                // turn opens it downward.
+                turns: expanded ? (rtl ? -0.25 : 0.25) : 0,
                 duration: const Duration(milliseconds: 200),
-                child: Icon(LucideIcons.chevronRight, size: 16, color: muted),
+                child: Icon(
+                  rtl ? LucideIcons.chevronLeft : LucideIcons.chevronRight,
+                  size: 16,
+                  color: muted,
+                ),
               ),
               const SizedBox(width: 8),
               Text(

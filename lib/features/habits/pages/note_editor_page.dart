@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:streak/core/utils/app_dirs.dart';
 import 'package:streak/core/shortcuts/app_shortcuts.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/inset_extensions.dart';
@@ -136,12 +137,12 @@ class _NoteEditorPageState extends State<NoteEditorPage> with ShortcutHost {
               ? Padding(
                   padding: const EdgeInsets.only(left: 16),
                   child: Center(child: ExpressIconButton(
-                    icon: LucideIcons.arrowLeft,
+                    icon: arrowBack(context),
                     onPressed: () => AppNavigator.pop(),
                   )),
                 )
               : IconButton(
-                  icon: const Icon(LucideIcons.arrowLeft),
+                  icon: Icon(arrowBack(context)),
                   onPressed: () => AppNavigator.pop(),
                 ),
           actions: [

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:streak/core/shortcuts/app_shortcuts.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_theme.dart';
 import 'package:streak/app/theme/app_tokens.dart';
@@ -974,7 +975,7 @@ class _TopBar extends StatelessWidget {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(LucideIcons.chevronLeft, color: Colors.white),
+            icon: Icon(chevronBack(context), color: Colors.white),
             onPressed: () => AppNavigator.pop(),
           ),
           Expanded(

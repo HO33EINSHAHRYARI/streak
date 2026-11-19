@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/i18n/l10n.dart';
 import 'package:streak/core/widgets/app_confirm_dialog.dart';
 import 'package:streak/features/habits/data/habit.dart';
@@ -25,12 +25,8 @@ Future<bool> confirmUnscheduledDay(
         ? context.l10n.paused_day_title
         : context.l10n.unscheduled_title,
     message: onVacation
-        ? context.l10n.paused_day_body(
-            DateFormat.MMMMEEEEd(locale).format(date),
-          )
-        : context.l10n.unscheduled_body(
-            DateFormat.EEEE(locale).format(date),
-          ),
+        ? context.l10n.paused_day_body(AppDates.full(date, locale))
+        : context.l10n.unscheduled_body(AppDates.weekday(date, locale)),
     confirmLabel: context.l10n.unscheduled_confirm,
     icon: LucideIcons.calendarOff,
     danger: false,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/express/express_button.dart';
 import 'package:streak/core/express/express_motion.dart';
@@ -159,7 +160,7 @@ class ExpressStatRow extends StatelessWidget {
             ),
             if (onTap != null)
               Icon(
-                LucideIcons.chevronRight,
+                chevronForward(context),
                 size: 18,
                 color: context.tokens.muted,
               ),
@@ -247,7 +248,7 @@ class ExpressYearNav extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ExpressIconButton(
-          icon: LucideIcons.chevronLeft,
+          icon: chevronBack(context),
           size: 46,
           background: expressSurface(context, level: 2),
           onPressed: () => onChanged(-1),
@@ -284,7 +285,7 @@ class ExpressYearNav extends StatelessWidget {
           ),
         ),
         ExpressIconButton(
-          icon: LucideIcons.chevronRight,
+          icon: chevronForward(context),
           size: 46,
           background: expressSurface(context, level: 2),
           onPressed: canGoForward ? () => onChanged(1) : null,

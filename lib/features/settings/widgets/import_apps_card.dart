@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/express/express_surface.dart';
@@ -96,7 +96,7 @@ class _CardBody extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: ink.withValues(alpha: 0.07),
                   ),
-                  child: Icon(LucideIcons.arrowRight, size: 17, color: ink),
+                  child: Icon(arrowForward(context), size: 17, color: ink),
                 ),
               ],
             ),

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
 import 'package:streak/core/i18n/l10n.dart';
@@ -400,7 +401,7 @@ class FocusDoneToggle extends StatelessWidget {
           child: Row(
             children: [
               Icon(
-                open ? LucideIcons.chevronDown : LucideIcons.chevronRight,
+                open ? LucideIcons.chevronDown : chevronForward(context),
                 size: 18,
                 color: color,
               ),

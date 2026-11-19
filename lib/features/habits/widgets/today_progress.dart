@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/i18n/l10n.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/features/habits/widgets/today_intro.dart';
 
 class TodayProgress extends StatefulWidget {
@@ -78,8 +79,11 @@ class _TodayProgressState extends State<TodayProgress>
   }
 
   String _today(BuildContext context) {
-    final locale = Localizations.localeOf(context).languageCode;
-    final text = DateFormat('EEEE, d MMM', locale).format(AppClock.now());
+    final locale = Localizations.localeOf(context).toString();
+    final now = AppClock.now();
+    final text = AppDates.isFa(locale)
+        ? '${now.shamsiWeekdayName}، ${now.shamsiDay} ${now.shamsiMonthName}'
+        : DateFormat('EEEE, d MMM', locale).format(now);
     return text.isEmpty ? text : text[0].toUpperCase() + text.substring(1);
   }
 

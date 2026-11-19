@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
 import 'package:streak/core/i18n/date_labels.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/features/focus/data/focus_session.dart';
 import 'package:streak/features/focus/data/focus_stats.dart';
 import 'package:streak/features/settings/state/settings_controller.dart';
@@ -44,7 +45,10 @@ class FocusRangeBars extends StatelessWidget {
         return day == 1 || day % 5 == 0 ? '$day' : '';
       case FocusRange.year:
         return index.isEven
-            ? DateFormat.MMM(locale.toString()).format(stats.buckets[index])
+            ? (AppDates.isFa(locale.toString())
+                ? stats.buckets[index].shamsiMonthName
+                : DateFormat.MMM(locale.toString())
+                    .format(stats.buckets[index]))
             : '';
     }
   }

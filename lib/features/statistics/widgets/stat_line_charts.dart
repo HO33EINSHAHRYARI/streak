@@ -2,9 +2,9 @@ import 'dart:math' as math;
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/i18n/date_labels.dart';
 import 'package:streak/core/i18n/l10n.dart';
 import 'package:streak/features/statistics/widgets/stat_axis.dart';
@@ -60,7 +60,8 @@ class TrendChart extends StatelessWidget {
       whole: this.format == null && axisFormat == null,
     );
     final maxY = scale.maxY;
-    final format = DateFormat.MMMd(Localizations.localeOf(context).toString());
+    final chartLocale = Localizations.localeOf(context).toString();
+    String format(DateTime d) => AppDates.dayMonth(d, chartLocale);
     final average = values.reduce((a, b) => a + b) / values.length;
     final label = this.format ?? (double v) => '${v.round()}$suffix';
 
@@ -115,7 +116,7 @@ class TrendChart extends StatelessWidget {
                       for (final spot in spots)
                         LineTooltipItem(
                           '${label(spot.y)}\n'
-                          '${isFa ? startDate.add(Duration(days: spot.x.toInt())).shamsiShort : format.format(startDate.add(Duration(days: spot.x.toInt())))}',
+                          '${isFa ? startDate.add(Duration(days: spot.x.toInt())).shamsiShort : format(startDate.add(Duration(days: spot.x.toInt())))}',
                           _Chrome.tooltipText(context),
                         ),
                     ];
@@ -196,9 +197,9 @@ class TrendChart extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(format.format(startDate), style: statLabel(context)),
+            Text(format(startDate), style: statLabel(context)),
             Text(
-              format.format(startDate.add(Duration(days: values.length - 1))),
+              format(startDate.add(Duration(days: values.length - 1))),
               style: statLabel(context),
             ),
           ],

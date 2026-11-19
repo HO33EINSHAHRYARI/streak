@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
 import 'package:provider/provider.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/i18n/date_labels.dart';
 import 'package:streak/features/habits/data/habit.dart';
 import 'package:streak/features/habits/data/habit_note.dart';
@@ -36,27 +37,64 @@ class _ActivityCalendarState extends State<ActivityCalendar> {
   final _today = AppClock.now();
   late DateTime _month = DateTime(_today.year, _today.month, 1);
 
+  bool get _fa =>
+      AppDates.isFa(Localizations.localeOf(context).toString());
+
+  String get _monthTitle {
+    final locale = Localizations.localeOf(context).toString();
+    if (_fa) {
+      final sameYear = _month.shamsiYear == _today.shamsiYear;
+      return sameYear
+          ? _month.shamsiMonthName
+          : '${_month.shamsiMonthName} ${_month.shamsiYear}';
+    }
+    return _month.year == _today.year
+        ? DateFormat('MMMM', locale).format(_month)
+        : DateFormat('MMMM yyyy', locale).format(_month);
+  }
+
   int _weeksFor(int weekStart) {
-    final first = DateTime(_month.year, _month.month, 1);
+    final first = _fa
+        ? AppDates.jalaliMonthStart(_month)
+        : DateTime(_month.year, _month.month, 1);
     final offset = first.epochDay - first.startOfWeek(weekStart).epochDay;
-    final length = DateTime(_month.year, _month.month + 1, 0).day;
+    final length = _fa
+        ? jalaliDaysInMonth(_month.shamsiYear, _month.shamsiMonth)
+        : DateTime(_month.year, _month.month + 1, 0).day;
     return ((offset + length) / 7).ceil();
   }
 
   List<DateTime> _daysFor(int weekStart, int weeks) {
-    final first = DateTime(_month.year, _month.month, 1);
+    final first = _fa
+        ? AppDates.jalaliMonthStart(_month)
+        : DateTime(_month.year, _month.month, 1);
     final start = first.startOfWeek(weekStart);
     return List.generate(weeks * 7, (i) => start.addDays(i));
   }
 
-  bool _isCurrentMonth(DateTime d) =>
-      d.month == _month.month && d.year == _month.year;
+  bool _isCurrentMonth(DateTime d) => _fa
+      ? AppDates.sameJalaliMonth(d, _month)
+      : d.month == _month.month && d.year == _month.year;
 
   bool _isToday(DateTime d) =>
       d.year == _today.year && d.month == _today.month && d.day == _today.day;
 
-  void _shift(int by) =>
-      setState(() => _month = DateTime(_month.year, _month.month + by, 1));
+  void _shift(int by) => setState(() {
+        if (_fa) {
+          var (jy, jm) = AppDates.jalaliYearMonth(_month);
+          jm += by;
+          if (jm > 12) {
+            jm = 1;
+            jy++;
+          } else if (jm < 1) {
+            jm = 12;
+            jy--;
+          }
+          _month = jalaliToDateTime(jy, jm, 1);
+        } else {
+          _month = DateTime(_month.year, _month.month + by, 1);
+        }
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -76,11 +114,7 @@ class _ActivityCalendarState extends State<ActivityCalendar> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  _month.year == _today.year
-                      ? DateFormat('MMMM', Localizations.localeOf(context).toString())
-                          .format(_month)
-                      : DateFormat('MMMM yyyy', Localizations.localeOf(context).toString())
-                          .format(_month),
+                  _monthTitle,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
@@ -91,12 +125,12 @@ class _ActivityCalendarState extends State<ActivityCalendar> {
                   children: [
                     IconButton(
                       onPressed: () => _shift(-1),
-                      icon: const Icon(LucideIcons.chevronLeft),
+                      icon: Icon(chevronBack(context)),
                     ),
                     IconButton(
                       onPressed: atCurrent ? null : () => _shift(1),
                       icon: Icon(
-                        LucideIcons.chevronRight,
+                        chevronForward(context),
                         color: atCurrent ? context.tokens.muted : null,
                       ),
                     ),
@@ -109,13 +143,17 @@ class _ActivityCalendarState extends State<ActivityCalendar> {
               children: WeekdayLabels.shortFrom(
                       Localizations.localeOf(context).languageCode, weekStart)
                   .map((d) => Expanded(
-                        child: Text(
-                          d,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: context.tokens.muted,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 12,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            d,
+                            maxLines: 1,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: context.tokens.muted,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                       ))
@@ -172,6 +210,7 @@ class _CalendarCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = context.colors;
+    final fa = AppDates.isFa(Localizations.localeOf(context).toString());
     final negative = habit.kind == HabitKind.negative;
     final ratioFill = habit.kind == HabitKind.quantitative || habit.hasSubsteps;
     final future = date.isAfter(AppClock.now());
@@ -267,7 +306,7 @@ class _CalendarCell extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '${date.day}',
+                  fa ? '${date.shamsiDay}' : '${date.day}',
                   style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
                 ),
                 if (mark != null)

@@ -217,6 +217,13 @@ class HomeWidgetService {
       return bare.isEmpty ? bare : bare[0].toUpperCase() + bare.substring(1);
     }
 
+    if ((_locale ?? '').startsWith('fa')) {
+      return switch (pattern) {
+        'MMMd' => day.shamsiShort,
+        'EEEE' || 'ccc' => day.shamsiWeekdayName,
+        _ => plain(DateFormat(pattern, _locale ?? 'en').format(day)),
+      };
+    }
     try {
       return plain(DateFormat(pattern, _locale ?? 'en').format(day));
     } catch (e) {

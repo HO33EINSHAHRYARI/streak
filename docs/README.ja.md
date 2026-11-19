@@ -14,7 +14,7 @@
 
 ### Streak
 
-<img src="../assets/icon.svg" width="72" alt="Streak ロゴ" />
+<img src="../assets/icon.png" width="72" alt="Streak ロゴ" />
 
 ### ミニマルでプライベート、広告なしの習慣トラッカー
 

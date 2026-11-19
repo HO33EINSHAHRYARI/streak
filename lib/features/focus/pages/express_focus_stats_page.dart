@@ -12,6 +12,7 @@ import 'package:streak/core/extensions/color_extensions.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
 import 'package:streak/core/extensions/inset_extensions.dart';
 import 'package:streak/core/i18n/l10n.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/routing/app_navigator.dart';
 import 'package:streak/core/widgets/app_empty_state.dart';
 import 'package:streak/features/focus/data/focus_session.dart';
@@ -69,6 +70,7 @@ class _ExpressFocusStatsPageState extends State<ExpressFocusStatsPage> {
       now: AppClock.now(),
       weekStart: context.watch<SettingsController>().weekStart,
       habitId: widget.habitId,
+      jalali: AppDates.isFa(Localizations.localeOf(context).toString()),
     );
 
     final sections = <Widget>[

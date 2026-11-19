@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/i18n/l10n.dart';
 import 'package:streak/core/widgets/sheet_type.dart';
 import 'package:streak/core/widgets/photo_viewer.dart';
@@ -11,7 +11,7 @@ PhotoShot noteShot(BuildContext context, HabitNote note, String path) {
   final locale = Localizations.localeOf(context).toString();
   return PhotoShot(
     path: path,
-    day: DateFormat.yMMMMd(locale).format(parseDayKey(note.date)),
+     day: AppDates.long(parseDayKey(note.date), locale),
     text: note.text.trim(),
   );
 }

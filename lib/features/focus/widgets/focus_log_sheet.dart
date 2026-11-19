@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
@@ -7,6 +6,8 @@ import 'package:streak/core/express/express_button.dart';
 import 'package:streak/core/express/express_shapes.dart';
 import 'package:streak/core/express/express_surface.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
+import 'package:streak/core/widgets/app_date_picker.dart';
 import 'package:streak/core/i18n/l10n.dart';
 import 'package:streak/core/widgets/sheet_type.dart';
 import 'package:streak/core/widgets/section_label.dart';
@@ -56,7 +57,7 @@ class _FocusLogState extends State<_FocusLog> {
   Future<void> _pickDay() async {
     final today = AppClock.now();
     final first = today.subtract(const Duration(days: 730));
-    final picked = await showDatePicker(
+    final picked = await showAppDatePicker(
       context: context,
       initialDate: _day,
       firstDate: _day.isBefore(first) ? _day : first,
@@ -148,7 +149,7 @@ class _FocusLogState extends State<_FocusLog> {
                   child: _PickField(
                     icon: LucideIcons.calendar,
                     label: context.l10n.focus_log_date,
-                    value: DateFormat.yMMMd(locale).format(_day),
+                    value: AppDates.medium(_day, locale),
                     onTap: _pickDay,
                   ),
                 ),

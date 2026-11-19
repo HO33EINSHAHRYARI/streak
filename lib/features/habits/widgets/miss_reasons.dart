@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/express/express_surface.dart';
@@ -177,7 +178,7 @@ class MissReasonsTile extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: context.tokens.muted),
           ),
-          trailing: Icon(LucideIcons.chevronRight, size: 18, color: context.tokens.muted),
+          trailing: Icon(chevronForward(context), size: 18, color: context.tokens.muted),
         ),
       );
     }

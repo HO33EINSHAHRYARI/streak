@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/i18n/l10n.dart';
 import 'package:streak/core/utils/app_snackbar.dart';
 import 'package:streak/features/habits/data/habit.dart';
@@ -14,8 +14,10 @@ void announcePastCheck(
   bool wasDone,
 ) {
   if (!date.atMidnight.isBefore(AppClock.today())) return;
-  final day = DateFormat.MMMd(Localizations.localeOf(context).toString())
-      .format(date);
+  final day = AppDates.dayMonth(
+    date,
+    Localizations.localeOf(context).toString(),
+  );
   final l10n = context.l10n;
   AppSnackbar.action(
     context,

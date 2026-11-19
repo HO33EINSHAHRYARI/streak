@@ -12,6 +12,8 @@ import 'package:streak/app/pin_setup_page.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/database/local_store.dart';
 import 'package:streak/core/i18n/l10n.dart';
+import 'package:streak/core/i18n/app_dates.dart';
+import 'package:streak/core/extensions/date_extensions.dart';
 import 'package:streak/core/widgets/sheet_type.dart';
 import 'package:streak/core/utils/app_dirs.dart';
 import 'package:streak/core/utils/app_snackbar.dart';
@@ -194,7 +196,10 @@ class SettingsActions {
     final label = autoBackupLabel(context, settings.autoBackup);
     if (last == null) return label;
     final locale = Localizations.localeOf(context).toString();
-    return '$label  ·  ${DateFormat.yMMMd(locale).add_Hm().format(last)}';
+    final when = AppDates.isFa(locale)
+        ? '${last.shamsiFormatted} ${DateFormat.Hm(locale).format(last)}'
+        : DateFormat.yMMMd(locale).add_Hm().format(last);
+    return '$label  ·  $when';
   }
 
   static String backupFolderLabel(BuildContext context, String path) {

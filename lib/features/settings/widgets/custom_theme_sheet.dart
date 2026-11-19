@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart' as cp;
-import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/app/theme/color_themes.dart';
@@ -131,7 +131,7 @@ class _CustomThemeSheet extends StatelessWidget {
                         ),
                         const SizedBox(width: 6),
                         Icon(
-                          LucideIcons.chevronRight,
+                          chevronForward(context),
                           size: 16,
                           color: context.tokens.muted,
                         ),

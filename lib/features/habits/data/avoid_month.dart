@@ -1,4 +1,5 @@
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/features/habits/data/habit.dart';
 
 class AvoidMonth {
@@ -16,25 +17,47 @@ class AvoidMonth {
   final double spent;
   final List<(DateTime, double)> expenses;
 
-  static DateTime firstOf(Habit habit) =>
-      DateTime(habit.startedAt.year, habit.startedAt.month);
+  static DateTime firstOf(Habit habit, {bool jalali = false}) => jalali
+      ? AppDates.jalaliMonthStart(habit.startedAt)
+      : DateTime(habit.startedAt.year, habit.startedAt.month);
 
-  static List<DateTime> monthsOf(Habit habit) {
+  static List<DateTime> monthsOf(Habit habit, {bool jalali = false}) {
     final today = AppClock.today();
-    final last = DateTime(today.year, today.month);
+    final last = jalali
+        ? AppDates.jalaliMonthStart(today)
+        : DateTime(today.year, today.month);
     return [
       for (
-        var month = firstOf(habit);
+        var month = firstOf(habit, jalali: jalali);
         !month.isAfter(last);
-        month = DateTime(month.year, month.month + 1)
+        month = jalali
+            ? _nextJalaliMonth(month, 1)
+            : DateTime(month.year, month.month + 1)
       )
         month,
     ];
   }
 
-  factory AvoidMonth.of(Habit habit, DateTime month) {
-    final first = DateTime(month.year, month.month);
-    final last = DateTime(month.year, month.month + 1, 0);
+  static DateTime _nextJalaliMonth(DateTime month, int by) {
+    var (jy, jm) = AppDates.jalaliYearMonth(month);
+    jm += by;
+    if (jm > 12) {
+      jm = 1;
+      jy++;
+    } else if (jm < 1) {
+      jm = 12;
+      jy--;
+    }
+    return jalaliToDateTime(jy, jm, 1);
+  }
+
+  factory AvoidMonth.of(Habit habit, DateTime month, {bool jalali = false}) {
+    final first = jalali
+        ? AppDates.jalaliMonthStart(month)
+        : DateTime(month.year, month.month);
+    final last = jalali
+        ? first.addDays(jalaliDaysInMonth(month.shamsiYear, month.shamsiMonth) - 1)
+        : DateTime(month.year, month.month + 1, 0);
     final today = AppClock.today();
     final from = first.isBefore(habit.startedAt) ? habit.startedAt : first;
     final to = last.isAfter(today) ? today : last;

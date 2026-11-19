@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/features/focus/data/focus_session.dart';
 import 'package:streak/features/focus/state/focus_controller.dart';
 import 'package:streak/features/habits/data/habit.dart';
@@ -33,6 +34,7 @@ class FocusDailyBars extends StatelessWidget {
 
     if (express) {
       final locale = Localizations.localeOf(context).toString();
+      final fa = AppDates.isFa(locale);
       final month = DateFormat.MMM(locale);
       return ExpressLineChart(
         values: minutes,
@@ -41,10 +43,14 @@ class FocusDailyBars extends StatelessWidget {
         height: 176,
         format: label,
         axisFormat: axis,
-        label: (index) => '${start.addDays(index).day}',
+        label: (index) =>
+            '${fa ? start.addDays(index).shamsiDay : start.addDays(index).day}',
         subLabel: (index) {
           final day = start.addDays(index);
-          return day.day == 1 || index == 0 ? month.format(day) : null;
+          final first = fa ? day.shamsiDay == 1 : day.day == 1;
+          return first || index == 0
+              ? (fa ? day.shamsiMonthName : month.format(day))
+              : null;
         },
       );
     }

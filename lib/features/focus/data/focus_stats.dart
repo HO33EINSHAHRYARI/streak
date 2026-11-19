@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/features/focus/data/focus_session.dart';
 
 enum FocusRange { week, month, year }
@@ -86,13 +87,31 @@ class FocusStats {
     FocusRange range,
     DateTime today,
     int weekStart,
-    int offset,
-  ) {
+    int offset, {
+    bool jalali = false,
+  }) {
     switch (range) {
       case FocusRange.week:
         final first = today.startOfWeek(weekStart).addDays(offset * 7);
         return [for (var i = 0; i < 7; i++) first.addDays(i)];
       case FocusRange.month:
+        if (jalali) {
+          final (jy, jm, _) = today.jalali;
+          var month = jm + offset;
+          var year = jy;
+          while (month > 12) {
+            month -= 12;
+            year++;
+          }
+          while (month < 1) {
+            month += 12;
+            year--;
+          }
+          final days = jalaliDaysInMonth(year, month);
+          return [
+            for (var i = 1; i <= days; i++) jalaliToDateTime(year, month, i),
+          ];
+        }
         final anchor = DateTime(today.year, today.month + offset);
         final days = DateTime(anchor.year, anchor.month + 1, 0).day;
         return [
@@ -100,6 +119,10 @@ class FocusStats {
             DateTime(anchor.year, anchor.month, i),
         ];
       case FocusRange.year:
+        if (jalali) {
+          final jy = today.shamsiYear + offset;
+          return [for (var m = 1; m <= 12; m++) jalaliToDateTime(jy, m, 1)];
+        }
         final year = today.year + offset;
         return [for (var m = 1; m <= 12; m++) DateTime(year, m)];
     }
@@ -112,6 +135,7 @@ class FocusStats {
     required int weekStart,
     String? habitId,
     int offset = 0,
+    bool jalali = false,
   }) {
     final scoped = habitId == null
         ? sessions
@@ -120,8 +144,9 @@ class FocusStats {
     final today =
         now.subtract(Duration(hours: AppClock.cutoffHour)).atMidnight;
     final weekFrom = today.startOfWeek(weekStart);
-    final buckets = _bucketsFor(range, today, weekStart, offset);
-    final previous = _bucketsFor(range, today, weekStart, offset - 1);
+    final buckets = _bucketsFor(range, today, weekStart, offset, jalali: jalali);
+    final previous =
+        _bucketsFor(range, today, weekStart, offset - 1, jalali: jalali);
     final series = List<int>.filled(buckets.length, 0);
     final stacks = [for (var i = 0; i < buckets.length; i++) <String, int>{}];
     final hours = List<int>.filled(24, 0);
@@ -135,8 +160,10 @@ class FocusStats {
     final weekIndex = weekFrom.epochDay;
     final firstBucket = buckets.first.epochDay;
     final bucketYear = buckets.first.year;
+    final bucketJy = buckets.first.shamsiYear;
     final firstPrevious = previous.first.epochDay;
     final previousYear = previous.first.year;
+    final previousJy = previous.first.shamsiYear;
 
     var rangeCount = 0;
     var todaySeconds = 0;
@@ -160,7 +187,11 @@ class FocusStats {
         heat[day.dayKey] = (heat[day.dayKey] ?? 0) + session.seconds;
       }
       final before = range == FocusRange.year
-          ? (day.year == previousYear ? day.month - 1 : -1)
+          ? ((jalali
+                  ? day.shamsiYear == previousJy
+                  : day.year == previousYear)
+              ? (jalali ? day.shamsiMonth - 1 : day.month - 1)
+              : -1)
           : epoch - firstPrevious;
       if (before >= 0 && before < previous.length) {
         previousSeconds += session.seconds;
@@ -168,12 +199,17 @@ class FocusStats {
       if (epoch == todayIndex) todaySeconds += session.seconds;
       final weekOffset = epoch - weekIndex;
       if (weekOffset >= 0 && weekOffset < 7) weekSeconds += session.seconds;
-      if (day.year == today.year && day.month == today.month) {
+      final inMonth = jalali
+          ? AppDates.sameJalaliMonth(day, today)
+          : (day.year == today.year && day.month == today.month);
+      if (inMonth) {
         monthSeconds += session.seconds;
       }
 
       final index = range == FocusRange.year
-          ? (day.year == bucketYear ? day.month - 1 : -1)
+          ? ((jalali ? day.shamsiYear == bucketJy : day.year == bucketYear)
+              ? (jalali ? day.shamsiMonth - 1 : day.month - 1)
+              : -1)
           : epoch - firstBucket;
       if (index < 0 || index >= buckets.length) continue;
       rangeCount++;

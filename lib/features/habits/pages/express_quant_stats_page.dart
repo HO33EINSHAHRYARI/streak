@@ -9,6 +9,7 @@ import 'package:streak/core/express/express_surface.dart';
 import 'package:streak/core/express/express_tabs.dart';
 import 'package:streak/core/express/express_type.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/extensions/inset_extensions.dart';
 import 'package:streak/core/i18n/l10n.dart';
 import 'package:streak/core/widgets/app_empty_state.dart';
@@ -43,6 +44,7 @@ class _ExpressQuantStatsPageState extends State<ExpressQuantStatsPage> {
       range: _range,
       now: AppClock.now(),
       weekStart: context.watch<SettingsController>().weekStart,
+      jalali: AppDates.isFa(Localizations.localeOf(context).toString()),
     );
     final totals = stats.totals;
 

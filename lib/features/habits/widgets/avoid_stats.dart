@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/express/express_shapes.dart';
@@ -8,6 +9,7 @@ import 'package:streak/core/express/express_surface.dart';
 import 'package:streak/core/express/express_type.dart';
 import 'package:streak/core/extensions/color_extensions.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/i18n/l10n.dart';
 import 'package:streak/core/minimal/minimal_kit.dart';
 import 'package:streak/core/utils/amount_format.dart';
@@ -152,8 +154,8 @@ class _BookReads extends StatelessWidget {
   String _day(BuildContext context, DateTime date) {
     final locale = Localizations.localeOf(context).toString();
     return date.year == AppClock.today().year
-        ? DateFormat.MMMd(locale).format(date)
-        : DateFormat.yMMMd(locale).format(date);
+        ? AppDates.dayMonth(date, locale)
+        : AppDates.medium(date, locale);
   }
 
   @override
@@ -202,7 +204,7 @@ class _BookReads extends StatelessWidget {
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 6),
                                   child: Icon(
-                                    LucideIcons.arrowRight,
+                                    arrowForward(context),
                                     size: 14,
                                     color: context.tokens.muted,
                                   ),
@@ -434,15 +436,34 @@ class AvoidMonthSection extends StatefulWidget {
 }
 
 class _AvoidMonthSectionState extends State<AvoidMonthSection> {
+  bool get _fa =>
+      AppDates.isFa(Localizations.localeOf(context).toString());
+
   late DateTime _month = _current;
 
   DateTime get _current {
     final today = AppClock.today();
-    return DateTime(today.year, today.month);
+    return _fa
+        ? AppDates.jalaliMonthStart(today)
+        : DateTime(today.year, today.month);
   }
 
-  void _shift(int months) =>
-      setState(() => _month = DateTime(_month.year, _month.month + months));
+  void _shift(int months) => setState(() {
+        if (_fa) {
+          var (jy, jm) = AppDates.jalaliYearMonth(_month);
+          jm += months;
+          if (jm > 12) {
+            jm = 1;
+            jy++;
+          } else if (jm < 1) {
+            jm = 12;
+            jy--;
+          }
+          _month = jalaliToDateTime(jy, jm, 1);
+        } else {
+          _month = DateTime(_month.year, _month.month + months);
+        }
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -452,16 +473,16 @@ class _AvoidMonthSectionState extends State<AvoidMonthSection> {
     final locale = Localizations.localeOf(context).toString();
     String money(double value) => formatMoney(value, symbol, locale);
 
-    final first = AvoidMonth.firstOf(habit);
+    final first = AvoidMonth.firstOf(habit, jalali: _fa);
     final month = _month.isBefore(first) ? first : _month;
-    final data = AvoidMonth.of(habit, month);
+    final data = AvoidMonth.of(habit, month, jalali: _fa);
     final showSaved = habit.hasCost;
     final showSpent = habit.logsSpent || data.spent > 0;
     final balance = data.saved - data.spent;
     final expenses = data.expenses;
-    String day(DateTime date) => DateFormat.MMMEd(locale).format(date);
+    String day(DateTime date) => AppDates.weekdayDayMonth(date, locale);
 
-    final label = DateFormat.yMMMM(locale).format(month);
+    final label = AppDates.monthYear(month, locale);
     final nav = _MonthNav(
       label: label.isEmpty ? label : label[0].toUpperCase() + label.substring(1),
       onPrevious: month.isAfter(first) ? () => _shift(-1) : null,
@@ -601,9 +622,11 @@ class _AvoidMonthSectionState extends State<AvoidMonthSection> {
     Color danger,
     SettingsController style,
   ) {
-    final months = AvoidMonth.monthsOf(habit);
+    final months = AvoidMonth.monthsOf(habit, jalali: _fa);
     if (months.length < 2) return null;
-    final counts = [for (final m in months) AvoidMonth.of(habit, m).relapses];
+    final counts = [
+      for (final m in months) AvoidMonth.of(habit, m, jalali: _fa).relapses,
+    ];
     final total = counts.fold(0, (sum, n) => sum + n);
     final shown = months.length > 12 ? months.length - 12 : 0;
     final average = context.l10n.times_per_month(
@@ -618,7 +641,9 @@ class _AvoidMonthSectionState extends State<AvoidMonthSection> {
       selected: pick >= 0 ? pick : null,
       onSelect: (index) => setState(() => _month = months[shown + index]),
       label: (index) => last < 7 || (last - index).isEven
-          ? DateFormat.MMM(locale).format(months[shown + index])
+          ? (_fa
+              ? months[shown + index].shamsiMonthName
+              : DateFormat.MMM(locale).format(months[shown + index]))
           : '',
       tooltip: (value) => context.l10n.count_times(value.round()),
       axisFormat: (value) => '${value.round()}',
@@ -693,7 +718,7 @@ class _MonthNav extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        arrow(LucideIcons.chevronLeft, onPrevious),
+        arrow(chevronBack(context), onPrevious),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 150),
           child: Text(
@@ -708,7 +733,7 @@ class _MonthNav extends StatelessWidget {
             ),
           ),
         ),
-        arrow(LucideIcons.chevronRight, onNext),
+        arrow(chevronForward(context), onNext),
       ],
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/express/express_button.dart';
@@ -87,7 +88,7 @@ class _AllNotesPageState extends State<AllNotesPage> {
                 padding: const EdgeInsets.only(left: 16),
                 child: Center(
                   child: ExpressIconButton(
-                    icon: LucideIcons.arrowLeft,
+                    icon: arrowBack(context),
                     onPressed: () => AppNavigator.pop(),
                   ),
                 ),

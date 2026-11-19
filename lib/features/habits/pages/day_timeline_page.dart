@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:streak/core/utils/amount_format.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/express/express_button.dart';
@@ -332,12 +333,12 @@ class _DayTimelinePageState extends State<DayTimelinePage> {
             ? Padding(
                 padding: const EdgeInsets.only(left: 16),
                 child: Center(child: ExpressIconButton(
-                  icon: LucideIcons.chevronLeft,
+                  icon: chevronBack(context),
                   onPressed: () => AppNavigator.pop(),
                 )),
               )
             : IconButton(
-                icon: const Icon(LucideIcons.chevronLeft),
+                icon: Icon(chevronBack(context)),
                 onPressed: () => AppNavigator.pop(),
               ),
         title: express || minimal

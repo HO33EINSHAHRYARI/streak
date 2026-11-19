@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/features/habits/data/habit.dart';
 import 'package:streak/features/settings/state/settings_controller.dart';
 import 'package:streak/features/statistics/widgets/express_line_chart.dart';
@@ -31,7 +32,9 @@ class QuantDailyBars extends StatelessWidget {
     String axis(double value) => habit.amountText(value);
 
     if (express) {
-      final month = DateFormat.MMM(Localizations.localeOf(context).toString());
+      final locale = Localizations.localeOf(context).toString();
+      final fa = AppDates.isFa(locale);
+      final month = DateFormat.MMM(locale);
       return ExpressLineChart(
         values: amounts,
         color: habit.color.shownIn(context),
@@ -40,10 +43,14 @@ class QuantDailyBars extends StatelessWidget {
         goal: habit.hasGoal ? habit.perDayTarget : null,
         format: label,
         axisFormat: axis,
-        label: (index) => '${start.addDays(index).day}',
+        label: (index) =>
+            '${fa ? start.addDays(index).shamsiDay : start.addDays(index).day}',
         subLabel: (index) {
           final day = start.addDays(index);
-          return day.day == 1 || index == 0 ? month.format(day) : null;
+          final first = fa ? day.shamsiDay == 1 : day.day == 1;
+          return first || index == 0
+              ? (fa ? day.shamsiMonthName : month.format(day))
+              : null;
         },
       );
     }

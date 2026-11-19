@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/color_extensions.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/i18n/date_labels.dart';
 import 'package:streak/core/i18n/l10n.dart';
 import 'package:streak/core/icons/habit_glyph.dart';
@@ -513,9 +514,10 @@ class GridMonthCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final today = AppClock.today();
     final circle = context.watch<SettingsController>().isCircleCheck;
-    final month = DateFormat.yMMM(
+    final month = AppDates.monthShortYear(
+      today,
       Localizations.localeOf(context).toString(),
-    ).format(today);
+    );
 
     return Semantics(
       button: true,
@@ -615,7 +617,9 @@ class _GridYearStripState extends State<_GridYearStrip> {
     final start = today
         .startOfWeek(context.watch<SettingsController>().weekStart)
         .addDays(-7 * (_weeks - 1));
-    final months = DateFormat.MMM(Localizations.localeOf(context).languageCode);
+    final locale = Localizations.localeOf(context).toString();
+    final fa = AppDates.isFa(locale);
+    final months = DateFormat.MMM(locale);
     final path = heatmapPathOn(context);
     final gap = path ? heatmapPathGap : 3.0;
     final pitch = _cell + gap;
@@ -679,14 +683,19 @@ class _GridYearStripState extends State<_GridYearStrip> {
                 ),
                 for (var column = 0; column < _weeks; column++)
                   if (column == 0 ||
-                      start.addDays(column * 7).month !=
-                          start.addDays((column - 1) * 7).month)
+                      (fa
+                          ? start.addDays(column * 7).shamsiMonth !=
+                              start.addDays((column - 1) * 7).shamsiMonth
+                          : start.addDays(column * 7).month !=
+                              start.addDays((column - 1) * 7).month))
                     Positioned(
                       left: column * pitch,
                       top: 0,
                       height: 14,
                       child: Text(
-                        months.format(start.addDays(column * 7)),
+                        fa
+                            ? start.addDays(column * 7).shamsiMonthName
+                            : months.format(start.addDays(column * 7)),
                         textScaler: MediaQuery.textScalerOf(context)
                             .clamp(maxScaleFactor: 1.2),
                         style: TextStyle(
@@ -757,9 +766,16 @@ class _GridMonthCalendar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final today = AppClock.today();
+    final fa = AppDates.isFa(Localizations.localeOf(context).toString());
     final weekStart = context.watch<SettingsController>().weekStart;
-    final first = DateTime(today.year, today.month, 1).startOfWeek(weekStart);
-    final lastDay = DateTime(today.year, today.month + 1, 0);
+    final first = (fa
+            ? AppDates.jalaliMonthStart(today)
+            : DateTime(today.year, today.month, 1))
+        .startOfWeek(weekStart);
+    final lastDay = fa
+        ? first.addDays(
+            jalaliDaysInMonth(today.shamsiYear, today.shamsiMonth) - 1)
+        : DateTime(today.year, today.month + 1, 0);
     final weeks =
         ((lastDay.startOfWeek(weekStart).epochDay - first.epochDay) / 7).round() +
         1;
@@ -773,7 +789,9 @@ class _GridMonthCalendar extends StatelessWidget {
             child: Row(
               children: List.generate(7, (d) {
                 final date = first.addDays(w * 7 + d);
-                final inMonth = date.month == today.month;
+                final inMonth = fa
+                    ? AppDates.sameJalaliMonth(date, today)
+                    : date.month == today.month;
                 final future = date.isAfter(today);
                 final pending = date == today && !habit.isCompletedOn(date);
                 return Expanded(
@@ -847,15 +865,29 @@ class _GridViewSwitcherState extends State<GridViewSwitcher> {
 
   double? _finger;
 
+  // In RTL the Row mirrors the icons, but raw dx stays measured from the
+  // left edge — map tap x through the mirroring so pill and taps agree.
+  bool get _rtl => Directionality.of(context) == ui.TextDirection.rtl;
+
   int get _selected =>
       _options.indexWhere((option) => option.$1 == widget.mode).clamp(0, 2);
 
-  int _under(double x) => (x / _slot).floor().clamp(0, _options.length - 1);
+  int _visualUnder(double x) =>
+      (x / _slot).floor().clamp(0, _options.length - 1);
+
+  int _under(double x) {
+    final visual = _visualUnder(x);
+    return _rtl ? _options.length - 1 - visual : visual;
+  }
 
   double _centerOf(int index) => (index + 0.5) * _slot;
 
-  void _press(Offset local) =>
-      setState(() => _finger = _centerOf(_under(local.dx - _inset)));
+  /// Visual (screen) center of a logical option index.
+  double _visualCenterOf(int index) =>
+      _centerOf(_rtl ? _options.length - 1 - index : index);
+
+  void _press(Offset local) => setState(
+      () => _finger = _visualCenterOf(_under(local.dx - _inset)));
 
   void _move(Offset local) {
     final finger = _finger;
@@ -903,7 +935,7 @@ class _GridViewSwitcherState extends State<GridViewSwitcher> {
       child: Stack(
         children: [
           AnimatedPositioned(
-            left: (finger ?? _centerOf(_selected)) - _slot / 2,
+            left: (finger ?? _visualCenterOf(_selected)) - _slot / 2,
             top: 0,
             bottom: 0,
             width: _slot,

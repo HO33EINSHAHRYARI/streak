@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/utils/amount_format.dart';
 import 'package:streak/features/habits/data/completion.dart';
 import 'package:streak/features/habits/data/habit.dart';
@@ -38,18 +39,30 @@ class QuantStats {
   static List<DateTime> _bucketsFor(
     QuantRange range,
     DateTime today,
-    int weekStart,
-  ) {
+    int weekStart, {
+    bool jalali = false,
+  }) {
     switch (range) {
       case QuantRange.week:
         final first = today.startOfWeek(weekStart);
         return [for (var i = 0; i < 7; i++) first.addDays(i)];
       case QuantRange.month:
+        if (jalali) {
+          final (jy, jm, _) = today.jalali;
+          final days = jalaliDaysInMonth(jy, jm);
+          return [
+            for (var i = 1; i <= days; i++) jalaliToDateTime(jy, jm, i),
+          ];
+        }
         final days = DateTime(today.year, today.month + 1, 0).day;
         return [
           for (var i = 1; i <= days; i++) DateTime(today.year, today.month, i),
         ];
       case QuantRange.year:
+        if (jalali) {
+          final jy = today.shamsiYear;
+          return [for (var m = 1; m <= 12; m++) jalaliToDateTime(jy, m, 1)];
+        }
         return [for (var m = 1; m <= 12; m++) DateTime(today.year, m)];
     }
   }
@@ -57,10 +70,15 @@ class QuantStats {
   static int _bucketOf(
     QuantRange range,
     List<DateTime> buckets,
-    DateTime day,
-  ) {
+    DateTime day, {
+    bool jalali = false,
+  }) {
     if (range == QuantRange.year) {
-      return day.year == buckets.first.year ? day.month - 1 : -1;
+      final inYear = jalali
+          ? day.shamsiYear == buckets.first.shamsiYear
+          : day.year == buckets.first.year;
+      if (!inYear) return -1;
+      return jalali ? day.shamsiMonth - 1 : day.month - 1;
     }
     final index = day.epochDay - buckets.first.epochDay;
     return index >= 0 && index < buckets.length ? index : -1;
@@ -98,10 +116,11 @@ class QuantStats {
     required QuantRange range,
     required DateTime now,
     required int weekStart,
+    bool jalali = false,
   }) {
     final today = now.atMidnight;
     final weekFrom = today.startOfWeek(weekStart);
-    final buckets = _bucketsFor(range, today, weekStart);
+    final buckets = _bucketsFor(range, today, weekStart, jalali: jalali);
     final series = List<double>.filled(buckets.length, 0);
 
     var todayAmount = 0.0;
@@ -116,11 +135,14 @@ class QuantStats {
 
       final offset = day.epochDay - weekFrom.epochDay;
       if (offset >= 0 && offset < 7) week += entry.count;
-      if (day.year == today.year && day.month == today.month) {
+      final inMonth = jalali
+          ? AppDates.sameJalaliMonth(day, today)
+          : (day.year == today.year && day.month == today.month);
+      if (inMonth) {
         month += entry.count;
       }
 
-      final index = _bucketOf(range, buckets, day);
+      final index = _bucketOf(range, buckets, day, jalali: jalali);
       if (index >= 0) series[index] += entry.count;
     }
 

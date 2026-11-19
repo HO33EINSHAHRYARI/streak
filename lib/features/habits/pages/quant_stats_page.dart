@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:streak/features/habits/widgets/avoid_stats.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/extensions/inset_extensions.dart';
 import 'package:streak/core/i18n/l10n.dart';
 import 'package:streak/core/routing/app_navigator.dart';
@@ -52,6 +54,7 @@ class _QuantStatsPageState extends State<QuantStatsPage> {
       range: _range,
       now: AppClock.now(),
       weekStart: settings.weekStart,
+      jalali: AppDates.isFa(Localizations.localeOf(context).toString()),
     );
     final totals = stats.totals;
 
@@ -184,7 +187,7 @@ class _QuantStatsPageState extends State<QuantStatsPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(LucideIcons.chevronLeft),
+          icon: Icon(chevronBack(context)),
           onPressed: () => AppNavigator.pop(),
         ),
         title: Text(habit.name),
@@ -230,7 +233,7 @@ class QuantStatsLink extends StatelessWidget {
                   color: color,
                 ),
               ),
-              Icon(LucideIcons.chevronRight, size: 15, color: color),
+              Icon(chevronForward(context), size: 15, color: color),
             ],
           ),
         ),

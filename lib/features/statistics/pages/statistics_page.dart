@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
 import 'package:streak/core/extensions/inset_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/i18n/l10n.dart';
 import 'package:streak/core/routing/app_navigator.dart';
 import 'package:streak/core/widgets/stat_columns.dart';
@@ -63,9 +63,10 @@ class _StatisticsPageState extends State<StatisticsPage> {
     if (_statsKey != key) {
       _statsKey = key;
       if (HabitStats.isLight(scoped)) {
-        _stats = HabitStats.compute(scoped, _year);
+        _stats = HabitStats.compute(scoped, _year, jalali: AppDates.isFa(Localizations.localeOf(context).toString()));
       } else {
-        HabitStats.inBackground(scoped, _year).then((stats) {
+        HabitStats.inBackground(scoped, _year,
+            jalali: AppDates.isFa(Localizations.localeOf(context).toString())).then((stats) {
           if (mounted && _statsKey == key) setState(() => _stats = stats);
         });
       }
@@ -452,12 +453,12 @@ class _SecondaryStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final months = DateFormat.MMMM(
+    final monthNames = AppDates.monthNames(
       Localizations.localeOf(context).toString(),
     );
     final bestMonth = stats.total == 0
         ? '—'
-        : months.format(DateTime(2024, stats.bestMonth + 1));
+        : monthNames[stats.bestMonth.clamp(0, 11)];
 
     Widget cell(Widget child) => Expanded(child: child);
 

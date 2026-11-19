@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:streak/core/shortcuts/app_shortcuts.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/inset_extensions.dart';
@@ -785,7 +786,7 @@ class _TodosPageState extends State<TodosPage>
         title: minimal || express ? null : Text(context.l10n.todos),
         leading: minimal && Navigator.of(context).canPop()
             ? IconButton(
-                icon: const Icon(LucideIcons.arrowLeft),
+                icon: Icon(arrowBack(context)),
                 onPressed: () => AppNavigator.pop(),
               )
             : null,

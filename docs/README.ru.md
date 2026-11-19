@@ -14,7 +14,7 @@
 
 ### Streak
 
-<img src="../assets/icon.svg" width="72" alt="Логотип Streak" />
+<img src="../assets/icon.png" width="72" alt="Логотип Streak" />
 
 ### Минималистичный, приватный трекер привычек без рекламы
 

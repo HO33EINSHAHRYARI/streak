@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/express/express_motion.dart';
 import 'package:streak/core/express/express_page.dart';
@@ -61,9 +62,10 @@ class _ExpressStatisticsPageState extends State<ExpressStatisticsPage> {
     if (_statsKey != key) {
       _statsKey = key;
       if (HabitStats.isLight(scoped)) {
-        _stats = HabitStats.compute(scoped, _year);
+        _stats = HabitStats.compute(scoped, _year, jalali: AppDates.isFa(Localizations.localeOf(context).toString()));
       } else {
-        HabitStats.inBackground(scoped, _year).then((stats) {
+        HabitStats.inBackground(scoped, _year,
+            jalali: AppDates.isFa(Localizations.localeOf(context).toString())).then((stats) {
           if (mounted && _statsKey == key) setState(() => _stats = stats);
         });
       }

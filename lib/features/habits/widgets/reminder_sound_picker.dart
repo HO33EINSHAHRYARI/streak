@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/i18n/l10n.dart';
 import 'package:streak/core/utils/responsive.dart';
@@ -201,7 +202,7 @@ class ReminderSoundRow extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Icon(
-                LucideIcons.chevronRight,
+                chevronForward(context),
                 size: 16,
                 color: context.tokens.muted,
               ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/minimal/minimal_type.dart';
 
@@ -441,7 +441,7 @@ class MinimalRow extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 8),
               child: Icon(
-                LucideIcons.chevronRight,
+                chevronForward(context),
                 size: 15,
                 color: muted.withValues(alpha: 0.8),
               ),

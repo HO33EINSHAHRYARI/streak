@@ -98,13 +98,19 @@ class HabitStats {
 
   double get perWeek => activeDays == 0 ? 0 : total / (activeDays / 7);
 
-  static int _countFor(Habit habit, int year) {
+  static int _countFor(Habit habit, int year, {bool jalali = false}) {
+    final jy = jalali
+        ? AppClock.today().shamsiYear + (year - AppClock.today().year)
+        : year;
     var count = 0;
     if (habit.kind == HabitKind.negative) {
       for (var m = 1; m <= 12; m++) {
-        final daysInMonth = DateTime(year, m + 1, 0).day;
+        final daysInMonth = jalali
+            ? jalaliDaysInMonth(jy, m)
+            : DateTime(year, m + 1, 0).day;
         for (var d = 1; d <= daysInMonth; d++) {
-          if (habit.isCompletedOn(DateTime(year, m, d))) count++;
+          final date = jalali ? jalaliToDateTime(jy, m, d) : DateTime(year, m, d);
+          if (habit.isCompletedOn(date)) count++;
         }
       }
       return count;
@@ -113,13 +119,18 @@ class HabitStats {
     for (final entry in habit.completions.values) {
       if (entry.count < habit.effectiveTarget) continue;
       final date = parseDayKey(entry.date);
-      if (date.year != year || date.isAfter(today)) continue;
+      final inYear = jalali ? date.shamsiYear == jy : date.year == year;
+      if (!inYear || date.isAfter(today)) continue;
       count++;
     }
     return count;
   }
 
-  static List<double> _streakSeries(List<Habit> habits, DateTime today) {
+  static List<double> _streakSeries(
+    List<Habit> habits,
+    DateTime today, {
+    bool jalali = false,
+  }) {
     final start = today.addDays(-(window - 1));
     final series = List<double>.filled(window, 0);
 
@@ -139,7 +150,9 @@ class HabitStats {
         if (periodic) {
           final key = habit.interval == HabitInterval.weekly
               ? day.startOfWeek(Habit.weekStart)
-              : DateTime(day.year, day.month);
+              : jalali
+                  ? DateTime(day.shamsiYear, day.shamsiMonth)
+                  : DateTime(day.year, day.month);
           if (key != period) {
             if (period != null) {
               closed = inPeriod >= habit.targetFrequency ? closed + 1 : 0;
@@ -233,7 +246,11 @@ class HabitStats {
     return days < 4000;
   }
 
-  static Future<HabitStats> inBackground(List<Habit> habits, int year) {
+  static Future<HabitStats> inBackground(
+    List<Habit> habits,
+    int year, {
+    bool jalali = false,
+  }) {
     final cutoff = AppClock.cutoffHour;
     final weigh = Habit.weighDifficulty;
     final weekStart = Habit.weekStart;
@@ -243,15 +260,19 @@ class HabitStats {
       Habit.weighDifficulty = weigh;
       Habit.weekStart = weekStart;
       Habit.secondChances = chances;
-      return compute(habits, year);
+      return compute(habits, year, jalali: jalali);
     });
   }
 
   static List<Habit> counted(List<Habit> habits) =>
       habits.where((h) => !h.tracking).toList();
 
-  static HabitStats compute(List<Habit> habits, int year) {
+  static HabitStats compute(List<Habit> habits, int year, {bool jalali = false}) {
     final today = AppClock.today();
+    // `year` is Gregorian; in fa the UI shows and filters by its Jalali twin.
+    final jy = jalali
+        ? today.shamsiYear + (year - today.year)
+        : year;
     final daily = <String, int>{};
     final monthly = List<int>.filled(12, 0);
     final weekday = List<int>.filled(7, 0);
@@ -266,7 +287,7 @@ class HabitStats {
     for (final habit in habits) {
       if (habit.kind == HabitKind.negative) {
         allDone += habit.cleanDays;
-        for (var i = 0; i < today.day; i++) {
+        for (var i = 0; i < (jalali ? today.shamsiDay : today.day); i++) {
           final day = today.addDays(-i);
           if (day.isBefore(habit.startedAt)) break;
           if (habit.isCompletedOn(day)) monthDone++;
@@ -277,9 +298,11 @@ class HabitStats {
           if (habit.isCompletedOn(day)) weekDone++;
         }
         for (var m = 1; m <= 12; m++) {
-          final daysInMonth = DateTime(year, m + 1, 0).day;
+          final daysInMonth = jalali
+              ? jalaliDaysInMonth(jy, m)
+              : DateTime(year, m + 1, 0).day;
           for (var d = 1; d <= daysInMonth; d++) {
-            final date = DateTime(year, m, d);
+            final date = jalali ? jalaliToDateTime(jy, m, d) : DateTime(year, m, d);
             if (!habit.isCompletedOn(date)) continue;
             daily[date.dayKey] = (daily[date.dayKey] ?? 0) + 1;
             monthly[m - 1]++;
@@ -294,12 +317,16 @@ class HabitStats {
         final date = parseDayKey(entry.date);
         if (date.isAfter(today)) continue;
         allDone++;
-        if (date.year == today.year && date.month == today.month) monthDone++;
+        final inMonth = jalali
+            ? (date.shamsiYear == today.shamsiYear &&
+                date.shamsiMonth == today.shamsiMonth)
+            : (date.year == today.year && date.month == today.month);
+        if (inMonth) monthDone++;
         if (!date.isBefore(weekFloor)) weekDone++;
-        final inYear = (date.year == year || date.shamsiYear == (AppClock.now().shamsiYear + (year - AppClock.now().year)));
+        final inYear = jalali ? date.shamsiYear == jy : date.year == year;
         if (!inYear) continue;
         daily[entry.date] = (daily[entry.date] ?? 0) + 1;
-        final mIdx = date.shamsiMonth - 1;
+        final mIdx = jalali ? date.shamsiMonth - 1 : date.month - 1;
         monthly[mIdx.clamp(0, 11)]++;
         weekday[date.weekday - 1]++;
         total++;
@@ -310,11 +337,11 @@ class HabitStats {
       }
     }
 
-    final streakSeries = _streakSeries(habits, today);
+    final streakSeries = _streakSeries(habits, today, jalali: jalali);
 
     final perHabit = <String, int>{};
     for (final habit in habits) {
-      perHabit[habit.id] = _countFor(habit, year);
+      perHabit[habit.id] = _countFor(habit, year, jalali: jalali);
     }
 
     var perfectDays = 0;

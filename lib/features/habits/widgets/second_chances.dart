@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/express/express_surface.dart';
 import 'package:streak/core/extensions/color_extensions.dart';
 import 'package:streak/core/i18n/l10n.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/widgets/app_confirm_dialog.dart';
 import 'package:streak/features/habits/data/habit.dart';
 import 'package:streak/features/settings/state/settings_controller.dart';
@@ -38,8 +38,10 @@ class SecondChancesCard extends StatelessWidget {
     final note = saved.isEmpty
         ? null
         : context.l10n.chance_used(
-            DateFormat.MMMd(Localizations.localeOf(context).toString())
-                .format(saved.last),
+            AppDates.dayMonth(
+              saved.last,
+              Localizations.localeOf(context).toString(),
+            ),
           );
 
     final row = Row(

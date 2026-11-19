@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:streak/core/shortcuts/app_shortcuts.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/app_background.dart';
 import 'package:streak/app/theme/app_tokens.dart';
@@ -676,7 +677,7 @@ class _TodoEditorPageState extends State<TodoEditorPage> with ShortcutHost {
                             IconButton(
                               tooltip: MaterialLocalizations.of(context)
                                   .backButtonTooltip,
-                              icon: Icon(LucideIcons.arrowLeft, color: ink),
+                              icon: Icon(arrowBack(context), color: ink),
                               onPressed: _close,
                             ),
                             const Spacer(),

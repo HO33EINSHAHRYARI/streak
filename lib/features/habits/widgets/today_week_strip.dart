@@ -2,7 +2,6 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
@@ -135,7 +134,6 @@ class _Day extends StatelessWidget {
     final isToday = day.isSameDay(today);
     final complete = due > 0 && done >= due;
     final ratio = due == 0 ? 0.0 : (done / due).clamp(0.0, 1.0);
-    final locale = Localizations.localeOf(context).toString();
     final name = day.shamsiShort;
 
     return Semantics(

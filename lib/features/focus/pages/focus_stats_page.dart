@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/color_extensions.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
 import 'package:streak/core/extensions/inset_extensions.dart';
 import 'package:streak/core/i18n/l10n.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/routing/app_navigator.dart';
 import 'package:streak/core/widgets/app_empty_state.dart';
 import 'package:streak/features/focus/data/focus_session.dart';
@@ -75,6 +77,7 @@ class _FocusStatsPageState extends State<FocusStatsPage> {
       weekStart: settings.weekStart,
       habitId: widget.habitId,
       offset: _offset,
+      jalali: AppDates.isFa(Localizations.localeOf(context).toString()),
     );
 
     final title = habit?.name ?? context.l10n.focus_stats;
@@ -293,7 +296,7 @@ class _FocusStatsPageState extends State<FocusStatsPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(LucideIcons.chevronLeft),
+          icon: Icon(chevronBack(context)),
           onPressed: () => AppNavigator.pop(),
         ),
         title: Text(title),

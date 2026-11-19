@@ -14,7 +14,7 @@
 
 ### Streak
 
-<img src="../assets/icon.svg" width="72" alt="Logo de Streak" />
+<img src="../assets/icon.png" width="72" alt="Logo de Streak" />
 
 ### Un rastreador de hábitos minimalista, privado y sin anuncios
 

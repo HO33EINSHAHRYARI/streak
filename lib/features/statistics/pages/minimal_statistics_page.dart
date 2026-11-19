@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
 import 'package:streak/core/extensions/inset_extensions.dart';
@@ -68,9 +70,10 @@ class _MinimalStatisticsPageState extends State<MinimalStatisticsPage> {
     if (_key != key) {
       _key = key;
       if (HabitStats.isLight(scoped)) {
-        _stats = HabitStats.compute(scoped, _year);
+        _stats = HabitStats.compute(scoped, _year, jalali: AppDates.isFa(Localizations.localeOf(context).toString()));
       } else {
-        HabitStats.inBackground(scoped, _year).then((stats) {
+        HabitStats.inBackground(scoped, _year,
+            jalali: AppDates.isFa(Localizations.localeOf(context).toString())).then((stats) {
           if (mounted && _key == key) setState(() => _stats = stats);
         });
       }
@@ -339,7 +342,7 @@ class _YearNav extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _Arrow(icon: LucideIcons.chevronLeft, onTap: () => onChanged(-1)),
+        _Arrow(icon: chevronBack(context), onTap: () => onChanged(-1)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Text(
@@ -348,7 +351,7 @@ class _YearNav extends StatelessWidget {
           ),
         ),
         _Arrow(
-          icon: LucideIcons.chevronRight,
+          icon: chevronForward(context),
           onTap: canGoForward ? () => onChanged(1) : null,
         ),
       ],

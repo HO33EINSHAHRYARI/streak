@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/i18n/l10n.dart';
+import 'package:streak/core/i18n/app_dates.dart';
+import 'package:streak/core/extensions/date_extensions.dart';
 import 'package:streak/core/widgets/sheet_type.dart';
 import 'package:streak/features/focus/data/focus_session.dart';
 import 'package:streak/features/focus/data/focus_stats.dart';
@@ -18,15 +19,15 @@ String focusPeriodLabel(
     case FocusRange.week:
       if (offset == 0) return context.l10n.period_this_week;
       if (offset == -1) return context.l10n.period_last_week;
-      return context.l10n.period_week_of(DateFormat.MMMd(locale).format(start));
+      return context.l10n.period_week_of(AppDates.dayMonth(start, locale));
     case FocusRange.month:
       if (offset == 0) return context.l10n.period_this_month;
       if (offset == -1) return context.l10n.period_last_month;
-      return DateFormat.yMMMM(locale).format(start);
+      return AppDates.monthYear(start, locale);
     case FocusRange.year:
       if (offset == 0) return context.l10n.period_this_year;
       if (offset == -1) return context.l10n.period_last_year;
-      return '${start.year}';
+      return '${AppDates.isFa(locale) ? start.shamsiYear : start.year}';
   }
 }
 
@@ -58,7 +59,7 @@ class FocusPeriodBar extends StatelessWidget {
     return Row(
       children: [
         _Arrow(
-          icon: LucideIcons.chevronLeft,
+          icon: chevronBack(context),
           tooltip: context.l10n.a11y_previous_week,
           onTap: () => onOffset(offset - 1),
         ),
@@ -84,7 +85,7 @@ class FocusPeriodBar extends StatelessWidget {
           ),
         ),
         _Arrow(
-          icon: LucideIcons.chevronRight,
+          icon: chevronForward(context),
           tooltip: context.l10n.a11y_next_week,
           onTap: offset < 0 ? () => onOffset(offset + 1) : null,
         ),

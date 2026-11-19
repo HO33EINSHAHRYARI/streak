@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/inset_extensions.dart';
@@ -81,7 +82,7 @@ class JourneyPage extends StatelessWidget {
           : AppBar(
               toolbarHeight: minimal ? 52 : null,
               leading: IconButton(
-                icon: const Icon(LucideIcons.chevronLeft),
+                icon: Icon(chevronBack(context)),
                 onPressed: () => AppNavigator.pop(),
               ),
               title: minimal ? null : Text(context.l10n.journey),

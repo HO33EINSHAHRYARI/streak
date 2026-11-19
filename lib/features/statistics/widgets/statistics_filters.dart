@@ -1,6 +1,6 @@
 import 'package:streak/core/extensions/date_extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/i18n/l10n.dart';
 import 'package:streak/features/habits/data/habit.dart';
@@ -112,7 +112,7 @@ class YearNavigator extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _ArrowButton(
-          icon: LucideIcons.chevronLeft,
+          icon: chevronBack(context),
           onTap: () {
             onChanged(-1);
           },
@@ -136,7 +136,7 @@ class YearNavigator extends StatelessWidget {
         );
         }),
         _ArrowButton(
-          icon: LucideIcons.chevronRight,
+          icon: chevronForward(context),
           onTap: canGoForward
               ? () {
                   onChanged(1);

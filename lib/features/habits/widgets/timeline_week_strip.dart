@@ -4,12 +4,14 @@ import 'dart:ui' show lerpDouble;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/express/express_button.dart';
 import 'package:streak/core/express/express_motion.dart';
 import 'package:streak/core/express/express_type.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
 import 'package:streak/core/i18n/date_labels.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/i18n/l10n.dart';
 import 'package:streak/core/minimal/minimal_type.dart';
 import 'package:streak/core/widgets/glass.dart';
@@ -107,9 +109,19 @@ class _TimelineWeekStripState extends State<TimelineWeekStrip>
 
   List<DateTime> _weeksOfMonth() {
     final selected = widget.selected;
-    final start = DateTime(selected.year, selected.month)
+    final fa = AppDates.isFa(Localizations.localeOf(context).toString());
+    final start = (fa
+            ? AppDates.jalaliMonthStart(selected)
+            : DateTime(selected.year, selected.month))
         .startOfWeek(widget.first.weekday);
     return [for (var w = 0; w < 6; w++) start.addDays(w * 7)];
+  }
+
+  bool _inMonth(DateTime day) {
+    final selected = widget.selected;
+    return AppDates.isFa(Localizations.localeOf(context).toString())
+        ? AppDates.sameJalaliMonth(day, selected)
+        : day.month == selected.month;
   }
 
   String _range(String locale) {
@@ -153,13 +165,17 @@ class _TimelineWeekStripState extends State<TimelineWeekStrip>
     for (final (w, week) in weeks.indexed) {
       if (!month && w != current) continue;
       for (final (i, tally) in tallies[w].indexed) {
-        if (month && week.addDays(i).month != widget.selected.month) continue;
+        if (month && !_inMonth(week.addDays(i))) continue;
         done += tally.done;
         due += tally.due;
       }
     }
     final muted = context.tokens.muted;
+    final faSpoken = AppDates.isFa(locale);
     final spoken = DateFormat.MMMMEEEEd(locale);
+    String spokenLabel(DateTime day) => faSpoken
+        ? '${day.shamsiWeekdayName}، ${day.shamsiFormatted}'
+        : spoken.format(day);
 
     Widget row(int w, double fold) => Row(
           children: [
@@ -170,9 +186,9 @@ class _TimelineWeekStripState extends State<TimelineWeekStrip>
                   child: _DayCard(
                     day: weeks[w].addDays(i),
                     label: labels[i],
-                    spoken: spoken,
+                    spoken: spokenLabel,
                     selected: weeks[w].addDays(i).isSameDay(widget.selected),
-                    outside: weeks[w].addDays(i).month != widget.selected.month,
+                    outside: !_inMonth(weeks[w].addDays(i)),
                     tally: tallies[w][i],
                     style: widget.style,
                     fold: fold,
@@ -256,7 +272,7 @@ class _TimelineWeekStripState extends State<TimelineWeekStrip>
                 ),
                 const SizedBox(width: 6),
                 _Arrow(
-                  icon: LucideIcons.chevronLeft,
+                  icon: chevronBack(context),
                   tooltip: month
                       ? context.l10n.a11y_previous_month
                       : context.l10n.a11y_previous_week,
@@ -265,7 +281,7 @@ class _TimelineWeekStripState extends State<TimelineWeekStrip>
                 ),
                 const SizedBox(width: 6),
                 _Arrow(
-                  icon: LucideIcons.chevronRight,
+                  icon: chevronForward(context),
                   tooltip: month
                       ? context.l10n.a11y_next_month
                       : context.l10n.a11y_next_week,
@@ -416,7 +432,7 @@ class _DayCard extends StatelessWidget {
 
   final DateTime day;
   final String label;
-  final DateFormat spoken;
+  final String Function(DateTime day) spoken;
   final bool selected;
   final bool outside;
   final DayTally tally;
@@ -444,7 +460,7 @@ class _DayCard extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
-      label: spoken.format(day),
+      label: spoken(day),
       excludeSemantics: true,
       child: GestureDetector(
         onTap: () => onTap(day),

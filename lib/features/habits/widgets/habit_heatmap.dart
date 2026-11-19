@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/color_extensions.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/i18n/date_labels.dart';
 import 'package:streak/core/i18n/l10n.dart';
 import 'package:streak/features/habits/data/habit.dart';
@@ -62,11 +63,14 @@ Color heatmapCellColor(
 }
 
 String heatmapDayLabel(BuildContext context, Habit habit, DateTime date) {
-  final locale = Localizations.localeOf(context).languageCode;
+  final locale = Localizations.localeOf(context).toString();
   final state = habit.isCompletedOn(date)
       ? context.l10n.done
       : context.l10n.a11y_not_done;
-  return '${DateFormat.yMMMMd(locale).format(date)}, $state';
+  final day = AppDates.isFa(locale)
+      ? date.shamsiFormatted
+      : DateFormat.yMMMMd(locale).format(date);
+  return '$day, $state';
 }
 
 class HabitHeatmap extends StatefulWidget {
@@ -127,7 +131,13 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
   }
 
   Color? _pathInk(BuildContext context, DateTime date, {bool inMonth = false}) {
-    if (inMonth && date.month != _today.month) return null;
+    final fa = AppDates.isFa(Localizations.localeOf(context).toString());
+    if (inMonth &&
+        !(fa
+            ? AppDates.sameJalaliMonth(date, _today)
+            : date.month == _today.month)) {
+      return null;
+    }
     return widget.habit.isCompletedOn(date)
         ? heatmapPathColor(context, widget.habit.color.shownIn(context))
         : context.colors.surfaceContainerHighest;
@@ -253,8 +263,15 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
   }
 
   int _monthColumns() {
-    final first = DateTime(_today.year, _today.month, 1);
-    final last = DateTime(_today.year, _today.month + 1, 0);
+    final fa =
+        AppDates.isFa(Localizations.localeOf(context).toString());
+    final first = fa
+        ? AppDates.jalaliMonthStart(_today)
+        : DateTime(_today.year, _today.month, 1);
+    final last = fa
+        ? first.addDays(
+            jalaliDaysInMonth(_today.shamsiYear, _today.shamsiMonth) - 1)
+        : DateTime(_today.year, _today.month + 1, 0);
     final start = _weekOf(first);
     final end = _weekOf(last).addDays(6);
     return ((end.epochDay - start.epochDay + 1) / 7).round();
@@ -292,9 +309,13 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
     required bool big,
   }) {
     final bool monthScope = widget.mode == HeatmapMode.month;
+    final bool fa =
+        AppDates.isFa(Localizations.localeOf(context).toString());
     final DateTime start;
     if (monthScope) {
-      start = _weekOf(DateTime(_today.year, _today.month, 1));
+      start = _weekOf(fa
+          ? AppDates.jalaliMonthStart(_today)
+          : DateTime(_today.year, _today.month, 1));
     } else {
       start = _weekOf(_today).addDays(-7 * (columns - 1));
     }
@@ -314,13 +335,13 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
             return Column(
               children: List.generate(7, (row) {
                 final date = start.addDays(col * 7 + row);
+                final inMonth = fa
+                    ? AppDates.sameJalaliMonth(date, _today)
+                    : date.month == _today.month;
                 final inScope = monthScope
-                    ? date.month == _today.month && !date.isAfter(_today)
+                    ? inMonth && !date.isAfter(_today)
                     : !date.isAfter(_today);
-                final future =
-                    monthScope &&
-                    date.month == _today.month &&
-                    date.isAfter(_today);
+                final future = monthScope && inMonth && date.isAfter(_today);
                 final fill = future
                     ? context.colors.surfaceContainerHighest.withValues(
                         alpha: 0.4,
@@ -374,9 +395,16 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
 
   Widget _monthCalendar(BuildContext context) {
     final weekStart = context.watch<SettingsController>().weekStart;
-    final monthStart = DateTime(_today.year, _today.month, 1);
+    final fa =
+        AppDates.isFa(Localizations.localeOf(context).toString());
+    final monthStart = fa
+        ? AppDates.jalaliMonthStart(_today)
+        : DateTime(_today.year, _today.month, 1);
     final first = monthStart.startOfWeek(weekStart);
-    final lastDay = DateTime(_today.year, _today.month + 1, 0);
+    final lastDay = fa
+        ? monthStart.addDays(
+            jalaliDaysInMonth(_today.shamsiYear, _today.shamsiMonth) - 1)
+        : DateTime(_today.year, _today.month + 1, 0);
     final weeks =
         ((lastDay.startOfWeek(weekStart).epochDay - first.epochDay) / 7).round() +
         1;
@@ -429,7 +457,9 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: List.generate(7, (d) {
                 final date = first.addDays(w * 7 + d);
-                final inMonth = date.month == _today.month;
+                final inMonth = fa
+                    ? AppDates.sameJalaliMonth(date, _today)
+                    : date.month == _today.month;
                 final future = date.isAfter(_today);
                 final fill = !inMonth
                     ? Colors.transparent
@@ -506,7 +536,9 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
                 : context.tokens.muted;
     return Center(
       child: Text(
-        '${date.day}',
+        AppDates.isFa(Localizations.localeOf(context).toString())
+            ? '${date.shamsiDay}'
+            : '${date.day}',
         style: TextStyle(
           fontSize: (side * 0.36).clamp(9.0, 14.0),
           fontWeight: filled || today ? FontWeight.w800 : FontWeight.w600,
@@ -519,7 +551,10 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
   }
 
   String _monthLabel(DateTime date) {
-    final locale = Localizations.localeOf(context).languageCode;
+    final locale = Localizations.localeOf(context).toString();
+    if (AppDates.isFa(locale)) {
+      return '${date.shamsiMonthName} ${date.shamsiYear}';
+    }
     final text = DateFormat.yMMMM(locale).format(date);
     return text.isEmpty ? text : text[0].toUpperCase() + text.substring(1);
   }
@@ -551,7 +586,9 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
     final gap = path ? heatmapPathGap : 3.0;
     const cell = 13.0;
     final start = _weekOf(_today).addDays(-7 * (columns - 1));
-    final months = DateFormat.MMM(Localizations.localeOf(context).languageCode);
+    final locale = Localizations.localeOf(context).toString();
+    final fa = AppDates.isFa(locale);
+    final months = DateFormat.MMM(locale);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_scrolled && _scroll.hasClients) {
@@ -577,7 +614,10 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
         children: List.generate(columns, (col) {
           final colDate = start.addDays(col * 7);
           final prevDate = start.addDays((col - 1) * 7);
-          final isNewMonth = col == 0 || colDate.month != prevDate.month;
+          final isNewMonth = col == 0 ||
+              (fa
+                  ? colDate.shamsiMonth != prevDate.shamsiMonth
+                  : colDate.month != prevDate.month);
           return Padding(
             padding: EdgeInsets.only(right: gap),
             child: Column(
@@ -591,7 +631,7 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
                           maxWidth: 40,
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            months.format(colDate),
+                            fa ? colDate.shamsiMonthName : months.format(colDate),
                             textScaler: MediaQuery.textScalerOf(context)
                                 .clamp(maxScaleFactor: 1.2),
                             style: TextStyle(

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/express/express_surface.dart';
 import 'package:streak/core/extensions/clock_extensions.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/i18n/l10n.dart';
 import 'package:streak/core/minimal/minimal_kit.dart';
 import 'package:streak/core/widgets/time_picker.dart';
@@ -65,7 +67,7 @@ String lastCheckLabel(
       ? context.l10n.today
       : day.isAtSameMomentAs(today.addDays(-1))
           ? context.l10n.yesterday
-          : DateFormat.MMMd(context.l10n.localeName).format(day);
+          : AppDates.dayMonth(day, context.l10n.localeName);
   final time = entry.stamp;
   if (time == null || !withTime) return when;
   return '$when · ${context.clockOf(time)}';
@@ -131,7 +133,7 @@ class CheckHistoryTile extends StatelessWidget {
           ),
         ),
         trailing: Icon(
-          LucideIcons.chevronRight,
+          chevronForward(context),
           size: 18,
           color: context.tokens.muted,
         ),
@@ -236,7 +238,9 @@ class _EntryState extends State<_Entry> {
     final day = entry.day;
     final label = day == null
         ? entry.date
-        : DateFormat.yMMMEd(context.l10n.localeName).format(day);
+        : (AppDates.isFa(context.l10n.localeName)
+            ? '${day.shamsiWeekdayName}، ${day.shamsiFormatted}'
+            : DateFormat.yMMMEd(context.l10n.localeName).format(day));
     final times = [...entry.times]..sort();
     final many = times.length > 1;
     final written = [

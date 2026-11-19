@@ -14,7 +14,7 @@
 
 ### Streak
 
-<img src="../assets/icon.svg" width="72" alt="Streak 标志" />
+<img src="../assets/icon.png" width="72" alt="Streak 标志" />
 
 ### 极简、私密、无广告的习惯追踪应用
 

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/clock_extensions.dart';
 import 'package:streak/core/extensions/color_extensions.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/i18n/app_dates.dart';
 import 'package:streak/core/express/express_button.dart';
 import 'package:streak/core/express/express_motion.dart';
 import 'package:streak/core/express/express_page.dart';
@@ -124,7 +126,7 @@ class _FocusHistoryPageState extends State<FocusHistoryPage> {
       return AppBar(
         toolbarHeight: minimal ? 52 : null,
         leading: IconButton(
-          icon: const Icon(LucideIcons.chevronLeft),
+          icon: Icon(chevronBack(context)),
           onPressed: () => AppNavigator.pop(),
         ),
         title: minimal ? null : Text(_title(context)),
@@ -264,6 +266,9 @@ class _DayHeader extends StatelessWidget {
       return context.l10n.yesterday;
     }
     final locale = Localizations.localeOf(context).toString();
+    if (AppDates.isFa(locale)) {
+      return '${day.shamsiWeekdayName}، ${day.shamsiFormatted}';
+    }
     final pattern = day.year == today.year ? 'EEEE, d MMM' : 'd MMM yyyy';
     return DateFormat(pattern, locale).format(day);
   }

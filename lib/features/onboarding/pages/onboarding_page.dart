@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/i18n/l10n.dart';
@@ -208,7 +209,7 @@ class _BackButton extends StatelessWidget {
             shape: BoxShape.circle,
           ),
           child: Icon(
-            LucideIcons.arrowLeft,
+            arrowBack(context),
             size: 20,
             color: context.colors.onSurface,
           ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/core/i18n/date_labels.dart';
+import 'package:streak/core/i18n/app_dates.dart';
+import 'package:streak/core/extensions/date_extensions.dart';
 import 'package:streak/core/utils/amount_format.dart';
 import 'package:streak/features/habits/data/habit.dart';
 import 'package:streak/features/habits/data/quant_stats.dart';
@@ -48,7 +50,10 @@ class QuantRangeBars extends StatelessWidget {
         return day == 1 || day % 5 == 0 ? '$day' : '';
       case QuantRange.year:
         return index.isEven
-            ? DateFormat.MMM(locale.toString()).format(stats.buckets[index])
+            ? (AppDates.isFa(locale.toString())
+                ? stats.buckets[index].shamsiMonthName
+                : DateFormat.MMM(locale.toString())
+                    .format(stats.buckets[index]))
             : '';
     }
   }

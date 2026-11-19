@@ -12,7 +12,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:streak/core/express/express_page.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/features/settings/state/settings_controller.dart';
-import 'package:streak/core/express/express_motion.dart';
 import 'package:streak/core/express/express_surface.dart';
 import 'package:streak/core/express/express_type.dart';
 import 'package:streak/core/minimal/minimal_type.dart';
