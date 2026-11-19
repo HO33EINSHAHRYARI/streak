@@ -8,7 +8,7 @@ on:
       tag:
         description: 'Release tag'
         required: false
-        default: 'v2.10.2-fa'
+        default: 'v2.10.3-fa'
         type: string
 
 permissions:
@@ -106,8 +106,8 @@ jobs:
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.tag || 'v2.10.1-fa' }}
-          name: 'Streak فارسی با فونت پیدا و تقویم شمسی - نسخه v2.10.2'
+          tag_name: ${{ github.event.inputs.tag || 'v2.10.3-fa' }}
+          name: 'پناهگاه (Panahgah) - ردیاب عادات و پیوستگی فردی نسخه v2.10.3'
           body: |
             ## نسخه نهایی Streak فارسی با فونت پیدا و تقویم شمسی 🚀\n\n- **ترجمه ۱۰۰٪ کامل فارسی تمامی بخش‌ها (از اینترو تا درباره ما)**\n- **فونت فارسی پیدا (Peyda)**\n- **تقویم و تاریخ شمسی (Jalali)**\n- **شروع هفته از روز شنبه به صورت پیش‌فرض**\n- **چیدمان استاندارد بدون باگ راست‌چین**
             
