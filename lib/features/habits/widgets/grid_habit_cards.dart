@@ -701,10 +701,10 @@ class _GridYearStripState extends State<_GridYearStrip> {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
-    );
+}
 
 class _YearCells extends CustomPainter {
   const _YearCells({
