@@ -1,3 +1,4 @@
+import 'package:streak/core/widgets/app_date_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -96,7 +97,7 @@ class _RepeatSheetState extends State<_RepeatSheet> {
 
   Future<void> _pickStart() async {
     final today = AppClock.today();
-    final picked = await showDatePicker(
+    final picked = await showAppDatePicker(
       context: context,
       initialDate: _due,
       firstDate: DateTime(today.year - 1),
