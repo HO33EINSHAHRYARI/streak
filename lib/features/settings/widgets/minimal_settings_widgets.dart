@@ -163,7 +163,9 @@ class SoftRow extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 8),
                   child: Icon(
-                    LucideIcons.chevronRight,
+                    Directionality.of(context) == TextDirection.rtl
+                        ? LucideIcons.chevronLeft
+                        : LucideIcons.chevronRight,
                     size: 16,
                     color: muted.withValues(alpha: 0.6),
                   ),
