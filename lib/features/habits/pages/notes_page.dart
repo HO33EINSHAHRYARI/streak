@@ -116,14 +116,14 @@ class NotesPage extends StatelessWidget {
                 delay: _entrance,
                 child: express
                     ? ExpressHeadline(
-                        title: DateFormat.yMMMMd(locale).format(date),
+                        title: locale.startsWith('fa') ? '${date.shamsiWeekdayName}، ${date.shamsiFormatted}' : locale.startsWith('fa') ? '${date.shamsiWeekdayName}، ${date.shamsiFormatted}' : DateFormat.yMMMMd(locale).format(date),
                         subtitle: context.l10n.notes_count(notes.length),
                       )
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            DateFormat.yMMMMd(locale).format(date),
+                            locale.startsWith('fa') ? '${date.shamsiWeekdayName}، ${date.shamsiFormatted}' : DateFormat.yMMMMd(locale).format(date),
                             style: minimal
                                 ? MinimalType.display(
                                     26,
