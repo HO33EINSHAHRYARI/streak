@@ -36,6 +36,46 @@ class AppClock {
 }
 
 extension DateOnly on DateTime {
+  (int, int, int) get jalali {
+    const gDaysInMonth = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+    final gy2 = (month > 2) ? (year - 1600) : (year - 1601);
+    var days = 365 * gy2 + ((gy2 + 4) ~/ 4) - ((gy2 + 99) ~/ 100) + ((gy2 + 399) ~/ 400) - 80 + day + gDaysInMonth[month - 1];
+    var jy = 979 + 33 * (days ~/ 12053);
+    days %= 12053;
+    jy += 4 * (days ~/ 1461);
+    days %= 1461;
+    if (days > 365) {
+      jy += (days - 1) ~/ 365;
+      days = (days - 1) % 365;
+    }
+    final int jm;
+    final int jd;
+    if (days < 186) {
+      jm = 1 + (days ~/ 31);
+      jd = 1 + (days % 31);
+    } else {
+      jm = 7 + ((days - 186) ~/ 30);
+      jd = 1 + ((days - 186) % 30);
+    }
+    return (jy, jm, jd);
+  }
+
+  int get shamsiDay => jalali.$3;
+  int get shamsiMonth => jalali.$2;
+  int get shamsiYear => jalali.$1;
+
+  static const jalaliMonthNames = [
+    '',
+    'فروردین', 'اردیبهشت', 'خرداد',
+    'تیر', 'مرداد', 'شهریور',
+    'مهر', 'آبان', 'آذر',
+    'دی', 'بهمن', 'اسفند',
+  ];
+
+  String get shamsiMonthName => jalaliMonthNames[shamsiMonth];
+  String get shamsiFormatted => '$shamsiDay $shamsiMonthName $shamsiYear';
+  String get shamsiShort => '$shamsiDay $shamsiMonthName';
+
   String get dayKey => '${_pad(day)}-${_pad(month)}-$year';
 
   DateTime get atMidnight => DateTime(year, month, day);
