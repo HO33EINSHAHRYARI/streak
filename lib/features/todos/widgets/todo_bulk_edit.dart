@@ -1,3 +1,4 @@
+import 'package:streak/core/widgets/app_date_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
@@ -118,7 +119,7 @@ Future<void> _pickDate(BuildContext context, List<String> ids) {
         case 0 || 1:
           setDate(today.addDays(index).dayKey);
         case 2:
-          final picked = await showDatePicker(
+          final picked = await showAppDatePicker(
             context: context,
             initialDate: today,
             firstDate: DateTime(today.year - 1),
