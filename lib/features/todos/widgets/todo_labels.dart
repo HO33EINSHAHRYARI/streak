@@ -39,6 +39,11 @@ String todoDateLabel(BuildContext context, DateTime date) {
   if (days == 0) return context.l10n.today;
   if (days == 1) return context.l10n.tomorrow;
   final locale = Localizations.localeOf(context).toString();
+  if (locale.startsWith('fa')) {
+    return date.year == AppClock.today().year
+        ? date.shamsiShort
+        : date.shamsiFormatted;
+  }
   final pattern = date.year == AppClock.today().year
       ? DateFormat.MMMd(locale)
       : DateFormat.yMMMd(locale);
