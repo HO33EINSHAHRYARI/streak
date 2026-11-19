@@ -207,8 +207,9 @@ class _DayLabel extends StatelessWidget {
       0 => context.l10n.today,
       1 => context.l10n.yesterday,
       -1 => context.l10n.tomorrow,
-      _ => DateFormat.yMMMMd(Localizations.localeOf(context).toString())
-          .format(date),
+      _ => Localizations.localeOf(context).toString().startsWith('fa')
+          ? date.shamsiFormatted
+          : DateFormat.yMMMMd(Localizations.localeOf(context).toString()).format(date),
     };
 
     return Padding(
