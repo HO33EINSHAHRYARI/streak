@@ -518,7 +518,7 @@
       }
     }
   },
-  "every_n_weeks": "{n, plural, =1{Every week} other{Every {n} هفته",
+  "every_n_weeks": "{n, plural, =1{هر هفته} other{هر {n} هفته}}",
   "@every_n_weeks": {
     "placeholders": {
       "n": {
@@ -526,7 +526,7 @@
       }
     }
   },
-  "every_n_months": "{n, plural, =1{Every month} other{Every {n} ماه",
+  "every_n_months": "{n, plural, =1{هر ماه} other{هر {n} ماه}}",
   "@every_n_months": {
     "placeholders": {
       "n": {
@@ -769,7 +769,7 @@
   "delete_note": "حذف یادداشت",
   "legend_note_added": "یادداشت added",
   "tomorrow": "فردا",
-  "notes_count": "{count, plural, =1{1 note} other{{count} یادداشت‌ها",
+  "notes_count": "{count, plural, =1{۱ یادداشت} other{{count} یادداشت}}",
   "@notes_count": {
     "placeholders": {
       "count": {
@@ -813,7 +813,7 @@
   "todo_repeat": "تکرار",
   "todo_repeat_never": "Don't تکرار",
   "todo_repeat_workdays": "Monday to Friday",
-  "todo_repeat_days": "{count, plural, =1{Every day} other{Every {count} روز",
+  "todo_repeat_days": "{count, plural, =1{هر روز} other{هر {count} روز}}",
   "@todo_repeat_days": {
     "placeholders": {
       "count": {
@@ -821,7 +821,7 @@
       }
     }
   },
-  "todo_repeat_weeks": "{count, plural, =1{Every week} other{Every {count} هفته",
+  "todo_repeat_weeks": "{count, plural, =1{هر هفته} other{هر {count} هفته}}",
   "@todo_repeat_weeks": {
     "placeholders": {
       "count": {
@@ -829,7 +829,7 @@
       }
     }
   },
-  "todo_repeat_months": "{count, plural, =1{Every month} other{Every {count} ماه",
+  "todo_repeat_months": "{count, plural, =1{هر ماه} other{هر {count} ماه}}",
   "@todo_repeat_months": {
     "placeholders": {
       "count": {
@@ -837,7 +837,7 @@
       }
     }
   },
-  "todo_repeat_years": "{count, plural, =1{Every year} other{Every {count} سال",
+  "todo_repeat_years": "{count, plural, =1{هر سال} other{هر {count} سال}}",
   "@todo_repeat_years": {
     "placeholders": {
       "count": {
@@ -904,7 +904,7 @@
   "todo_pin": "پین‌کد",
   "todo_unpin": "Unpin",
   "todo_select": "انتخاب",
-  "todo_selected": "{count, plural, =1{1 selected} other{{count} انتخاب‌شده",
+  "todo_selected": "{count, plural, =1{۱ مورد انتخاب‌شده} other{{count} مورد انتخاب‌شده}}",
   "@todo_selected": {
     "placeholders": {
       "count": {
@@ -912,7 +912,7 @@
       }
     }
   },
-  "todo_deleted_many": "{count, plural, =1{To-do deleted} other{{count} وظایف حذف شد",
+  "todo_deleted_many": "{count, plural, =1{وظیفه حذف شد} other{{count} وظیفه حذف شدند}}",
   "@todo_deleted_many": {
     "placeholders": {
       "count": {
@@ -949,7 +949,7 @@
   "habits_search": "عادت‌های جستجو",
   "todo_search_empty": "Nothing matches that",
   "todo_clear_completed": "پاکسازی تکمیل شد",
-  "todo_clear_completed_body": "{count, plural, =1{This deletes the completed to-do.} other{This deletes the {count} تکمیل‌شده وظایف",
+  "todo_clear_completed_body": "{count, plural, =1{این اقدام وظیفه انجام‌شده را حذف می‌کند.} other{این اقدام {count} وظیفه انجام‌شده را حذف می‌کند.}}",
   "@todo_clear_completed_body": {
     "placeholders": {
       "count": {
@@ -1150,7 +1150,7 @@
   "focus_keep_awake": "Keep screen روشن",
   "focus_images_limit": "Up to 10 images",
   "select_all": "انتخاب همه",
-  "selected_count": "{count, plural, =1{1 selected} other{{count} انتخاب‌شده",
+  "selected_count": "{count, plural, =1{۱ مورد انتخاب‌شده} other{{count} مورد انتخاب‌شده}}",
   "@selected_count": {
     "placeholders": {
       "count": {
@@ -1167,7 +1167,7 @@
       }
     }
   },
-  "focus_sessions_deleted": "{count, plural, =1{1 session deleted} other{{count} sessions حذف شد",
+  "focus_sessions_deleted": "{count, plural, =1{۱ جلسه تمرکز حذف شد} other{{count} جلسه تمرکز حذف شدند}}",
   "@focus_sessions_deleted": {
     "placeholders": {
       "count": {
@@ -2016,7 +2016,7 @@
   "difficulty_option_sub": "Let harder عادت‌ها تعداد for بیشتر in the روز پیشرفت",
   "second_chances": "ثانیه chances",
   "second_chances_sub": "هر 30 روز in a row earn a chance, up to 3. If you miss a روز it is spent and your استریک goes روشن",
-  "chances_left": "{count, plural, =1{1 chance saved} other{{count} chances ذخیره شد",
+  "chances_left": "{count, plural, =1{۱ بخت دوباره ذخیره شد} other{{count} بخت دوباره ذخیره شدند}}",
   "@chances_left": {
     "placeholders": {
       "count": {
@@ -2132,7 +2132,7 @@
   "book_new": "book جدید",
   "book_at_page": "Page I'm روشن",
   "book_read_before": "بار already read",
-  "book_reads": "{count, plural, =0{First read} =1{Read once} other{Read {count} بار",
+  "book_reads": "{count, plural, =0{بار اول} =1{یک بار خوانده شده} other{{count} بار خوانده شده}}",
   "@book_reads": {
     "placeholders": {
       "count": {
@@ -2168,7 +2168,7 @@
       }
     }
   },
-  "count_times": "{count, plural, =1{1 time} other{{count} بار",
+  "count_times": "{count, plural, =1{۱ بار} other{{count} بار}}",
   "@count_times": {
     "placeholders": {
       "count": {
