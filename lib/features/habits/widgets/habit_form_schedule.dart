@@ -1,3 +1,4 @@
+import 'package:streak/core/widgets/app_date_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:intl/intl.dart';
@@ -240,7 +241,7 @@ class ScheduleStartRow extends StatelessWidget {
 
   Future<void> _pick(BuildContext context) async {
     final today = AppClock.today();
-    final picked = await showDatePicker(
+    final picked = await showAppDatePicker(
       context: context,
       initialDate: start,
       firstDate: DateTime(today.year - (since ? 30 : 1)),
