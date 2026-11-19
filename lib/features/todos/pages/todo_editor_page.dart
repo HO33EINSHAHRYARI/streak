@@ -736,6 +736,7 @@ class _TodoEditorPageState extends State<TodoEditorPage> with ShortcutHost {
                             ],
                             TextField(
                               controller: _title,
+                              textAlign: TextAlign.start,
                               focusNode: _titleFocus,
                               maxLines: null,
                               keyboardType: TextInputType.text,
@@ -759,6 +760,7 @@ class _TodoEditorPageState extends State<TodoEditorPage> with ShortcutHost {
                             const SizedBox(height: 8),
                             TextField(
                               controller: _body,
+                              textAlign: TextAlign.start,
                               focusNode: _bodyFocus,
                               maxLines: null,
                               keyboardType: TextInputType.multiline,
@@ -1146,6 +1148,7 @@ class _ItemRow extends StatelessWidget {
         Expanded(
           child: TextField(
             controller: item.controller,
+            textAlign: TextAlign.start,
             focusNode: item.focus,
             maxLines: null,
             keyboardType: TextInputType.text,
