@@ -27,11 +27,10 @@ Color heatmapCellColor(
 
   final scheme = context.colors;
   final today = AppClock.today();
-  // Days before the habit existed carry no signal: keep them empty so a
-  // fresh habit's grid starts at its creation, GitHub-style. Future days
-  // stay visible but neutral so the grid keeps its full shape.
-  final beforeCreation = date.atMidnight.isBefore(habit.startedAt);
-  if (beforeCreation) return Colors.transparent;
+  // GitHub-style full grid: every day of the year renders a cell. Logged
+  // days take the habit color, empty days a faint neutral gray, future
+  // days stay neutral (never habit-tinted), and avoid habits show their
+  // clean streak as a whisper of the habit color instead of a solid fill.
   final mark = dayMarkOf(habit, date);
   if (mark != null) return mark.fill;
 
@@ -40,16 +39,14 @@ Color heatmapCellColor(
   }
 
   if (habit.kind == HabitKind.negative) {
-    final clean = habit.color.shownIn(context).withValues(alpha: 0.4);
     if (date.isAfter(today)) {
-      // Future stays neutral so tomorrow is never habit-tinted.
       return scheme.surfaceContainerHighest.withValues(alpha: 0.4);
     }
     if (habit.completions.containsKey(date.dayKey)) return context.tokens.danger;
-    return clean;
+    return habit.color.shownIn(context).withValues(alpha: 0.15);
   }
 
-  if (!beforeCreation && !habit.isCompletedOn(date) && habit.isCoveredOn(date)) {
+  if (!habit.isCompletedOn(date) && habit.isCoveredOn(date)) {
     return habit.color.shownIn(context).withValues(alpha: 0.22);
   }
 
@@ -594,7 +591,20 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
     final start = _weekOf(_today).addDays(-7 * (columns - 1));
     final locale = Localizations.localeOf(context).toString();
     final fa = AppDates.isFa(locale);
-    final months = DateFormat.MMM(locale);
+
+    // Label the column whose week CONTAINS the 1st of the month, not the
+    // one whose first day starts it — otherwise labels lag up to 6 days
+    // behind the boundary and two months read as merged.
+    final monthLabels = <int, String>{};
+    for (var col = 0; col < columns; col++) {
+      for (var d = 0; d < 7; d++) {
+        final day = start.addDays(col * 7 + d);
+        final (_, _, labelJd) = day.jalali;
+        if (labelJd != 1) continue;
+        monthLabels[col] = day.shamsiMonthName;
+        break;
+      }
+    }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_scrolled && _scroll.hasClients) {
@@ -619,12 +629,7 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
         child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: List.generate(columns, (col) {
-          final colDate = start.addDays(col * 7);
-          final prevDate = start.addDays((col - 1) * 7);
-          final isNewMonth = col == 0 ||
-              (fa
-                  ? colDate.shamsiMonth != prevDate.shamsiMonth
-                  : colDate.month != prevDate.month);
+          final monthLabel = monthLabels[col];
           return Padding(
             padding: EdgeInsets.only(right: gap),
             child: Column(
@@ -633,14 +638,15 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
                 SizedBox(
                   height: 14,
                   width: cell,
-                  child: isNewMonth
-                      ? OverflowBox(
+                  child: monthLabel == null
+                      ? null
+                      : OverflowBox(
                           maxWidth: 40,
                           alignment: fa
                               ? Alignment.centerRight
                               : Alignment.centerLeft,
                           child: Text(
-                            fa ? colDate.shamsiMonthName : months.format(colDate),
+                            monthLabel,
                             textScaler: MediaQuery.textScalerOf(context)
                                 .clamp(maxScaleFactor: 1.2),
                             style: TextStyle(
@@ -649,8 +655,7 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
                               color: context.tokens.muted,
                             ),
                           ),
-                        )
-                      : null,
+                        ),
                 ),
                 for (var row = 0; row < 7; row++)
                   Padding(

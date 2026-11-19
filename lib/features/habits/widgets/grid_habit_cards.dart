@@ -628,6 +628,19 @@ class _GridYearStripState extends State<_GridYearStrip> {
         heatmapCellColor(context, widget.habit, start.addDays(i)),
     ];
 
+    // Label the column whose week contains the 1st of the month.
+    final monthLabelAt = <int, String>{};
+    for (var column = 0; column < _weeks; column++) {
+      for (var day = 0; day < 7; day++) {
+        final date = start.addDays(column * 7 + day);
+        final isMonthStart = fa ? date.jalali.$3 == 1 : date.day == 1;
+        if (!isMonthStart) continue;
+        monthLabelAt[column] =
+            fa ? date.shamsiMonthName : months.format(date);
+        break;
+      }
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_scrolled && _scroll.hasClients) {
         _scrolled = true;
@@ -682,20 +695,13 @@ class _GridYearStripState extends State<_GridYearStrip> {
                   ),
                 ),
                 for (var column = 0; column < _weeks; column++)
-                  if (column == 0 ||
-                      (fa
-                          ? start.addDays(column * 7).shamsiMonth !=
-                              start.addDays((column - 1) * 7).shamsiMonth
-                          : start.addDays(column * 7).month !=
-                              start.addDays((column - 1) * 7).month))
+                  if (monthLabelAt[column] != null)
                     Positioned(
                       left: column * pitch,
                       top: 0,
                       height: 14,
                       child: Text(
-                        fa
-                            ? start.addDays(column * 7).shamsiMonthName
-                            : months.format(start.addDays(column * 7)),
+                        monthLabelAt[column]!,
                         textScaler: MediaQuery.textScalerOf(context)
                             .clamp(maxScaleFactor: 1.2),
                         style: TextStyle(

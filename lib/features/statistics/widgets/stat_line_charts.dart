@@ -194,15 +194,21 @@ class TrendChart extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 6),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(format(startDate), style: statLabel(context)),
-            Text(
-              format(startDate.add(Duration(days: values.length - 1))),
-              style: statLabel(context),
-            ),
-          ],
+        // The data flows left-to-right regardless of RTL, so pin the label
+        // row to LTR too — an RTL Row would swap the two ends and mislabel
+        // where the line peaks.
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(format(startDate), style: statLabel(context)),
+              Text(
+                format(startDate.add(Duration(days: values.length - 1))),
+                style: statLabel(context),
+              ),
+            ],
+          ),
         ),
       ],
     );

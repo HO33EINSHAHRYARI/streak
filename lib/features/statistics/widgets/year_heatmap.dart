@@ -136,6 +136,32 @@ class _YearHeatmapState extends State<YearHeatmap> {
     final empty = context.colors.surfaceContainerHighest;
     final max = widget.maxCount <= 0 ? 1 : widget.maxCount;
     final locale = Localizations.localeOf(context).languageCode;
+    final isFa = locale.startsWith('fa');
+
+    // A month label goes on the column whose week CONTAINS the 1st of the
+    // month. Labeling by the column's first day lags up to 6 days behind
+    // the real boundary and visually merges two months.
+    final monthLabels = <int, String>{};
+    for (var col = 0; col < columns; col++) {
+      for (var d = 0; d < 7; d++) {
+        final day = start.addDays(col * 7 + d);
+        final (labelJy, labelJm, labelJd) = day.jalali;
+        final isMonthStart = isFa ? labelJd == 1 : day.day == 1;
+        if (!isMonthStart) continue;
+        final inScope = rolling ||
+            _wholeHistory(context) ||
+            (isFa ? labelJy == jy : day.year == widget.year);
+        if (!inScope) continue;
+        monthLabels[col] = isFa
+            ? (_wholeHistory(context) && labelJm == 1
+                ? '${day.shamsiMonthName} ${day.shamsiYear % 100}'
+                : day.shamsiMonthName)
+            : (_wholeHistory(context) && day.month == 1
+                ? DateFormat('MMM yy', locale).format(day)
+                : DateFormat.MMM(locale).format(day));
+        break;
+      }
+    }
 
     Color cellColor(DateTime date) {
       final futureYear = _fa(context)
@@ -164,11 +190,7 @@ class _YearHeatmapState extends State<YearHeatmap> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: List.generate(columns, (col) {
-              final colDate = start.addDays(col * 7);
-              final prevDate = start.addDays((col - 1) * 7);
-              final isFa = locale.startsWith('fa');
-              final isNewMonth = (rolling || _wholeHistory(context) || (isFa ? colDate.shamsiYear == jy : colDate.year == widget.year)) &&
-                  (col == 0 || (isFa ? colDate.shamsiMonth != prevDate.shamsiMonth : colDate.month != prevDate.month));
+              final monthLabel = monthLabels[col];
               return Padding(
                 padding: const EdgeInsets.only(right: _gap),
                 child: Column(
@@ -177,21 +199,15 @@ class _YearHeatmapState extends State<YearHeatmap> {
                     SizedBox(
                       height: 14,
                       width: _cell,
-                      child: isNewMonth
-                          ? OverflowBox(
+                      child: monthLabel == null
+                          ? null
+                          : OverflowBox(
                               maxWidth: 55,
                               alignment: isFa
                                   ? Alignment.centerRight
                                   : Alignment.centerLeft,
                               child: Text(
-                                isFa
-                                    ? (_wholeHistory(context) && colDate.shamsiMonth == 1
-                                        ? '${colDate.shamsiMonthName} ${colDate.shamsiYear % 100}'
-                                        : colDate.shamsiMonthName)
-                                    : (_wholeHistory(context) && colDate.month == 1
-                                        ? DateFormat('MMM yy', locale)
-                                        : DateFormat.MMM(locale))
-                                        .format(colDate),
+                                monthLabel,
                                 textScaler: MediaQuery.textScalerOf(context)
                                     .clamp(maxScaleFactor: 1.2),
                                 style: TextStyle(
@@ -200,8 +216,7 @@ class _YearHeatmapState extends State<YearHeatmap> {
                                   color: context.tokens.muted,
                                 ),
                               ),
-                            )
-                          : null,
+                            ),
                     ),
                     for (var row = 0; row < 7; row++)
                       Padding(
