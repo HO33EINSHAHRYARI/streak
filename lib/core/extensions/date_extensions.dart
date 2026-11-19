@@ -60,6 +60,18 @@ extension DateOnly on DateTime {
     return (jy, jm, jd);
   }
 
+  static const jalaliWeekdayNames = [
+    '',
+    'دوشنبه',
+    'سه‌شنبه',
+    'چهارشنبه',
+    'پنج‌شنبه',
+    'جمعه',
+    'شنبه',
+    'یکشنبه',
+  ];
+
+  String get shamsiWeekdayName => jalaliWeekdayNames[weekday];
   int get shamsiDay => jalali.$3;
   int get shamsiMonth => jalali.$2;
   int get shamsiYear => jalali.$1;
