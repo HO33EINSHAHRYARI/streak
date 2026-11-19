@@ -72,7 +72,7 @@ extension DateOnly on DateTime {
     'دی', 'بهمن', 'اسفند',
   ];
 
-  String get shamsiMonthName => jalaliMonthNames[shamsiMonth];
+  String get shamsiMonthName => DateOnly.jalaliMonthNames[shamsiMonth];
   String get shamsiFormatted => '$shamsiDay $shamsiMonthName $shamsiYear';
   String get shamsiShort => '$shamsiDay $shamsiMonthName';
 
