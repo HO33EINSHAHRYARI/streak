@@ -119,7 +119,9 @@ class _MorphMenuState extends State<MorphMenu>
   static double _span(double t, double from, double to) =>
       ((t - from) / (to - from)).clamp(0.0, 1.0);
 
-  Widget _panel(BuildContext context) {
+  Widget _panel(BuildContext context) => _panelWithAnchor(context, widget.anchor);
+
+  Widget _panelWithAnchor(BuildContext context, Alignment anchor) {
     final style = widget.style;
     return AnimatedBuilder(
       animation: _controller,
@@ -135,7 +137,7 @@ class _MorphMenuState extends State<MorphMenu>
 
         return Transform.scale(
           scale: squeeze,
-          alignment: widget.anchor,
+          alignment: anchor,
           child: SizedBox(
             width: width,
             height: height,
@@ -280,15 +282,27 @@ class _MorphMenuState extends State<MorphMenu>
                 ),
               ),
             ),
-            Positioned(
-              left: 0,
-              top: 0,
-              child: CompositedTransformFollower(
-                link: _link,
-                targetAnchor: widget.anchor,
-                followerAnchor: widget.anchor,
-                child: _panel(context),
-              ),
+            Builder(
+              builder: (ctx) {
+                final isRtl = Directionality.of(ctx) == TextDirection.rtl;
+                Alignment effAnchor = widget.anchor;
+                if (isRtl) {
+                  if (widget.anchor == Alignment.topLeft) effAnchor = Alignment.topRight;
+                  else if (widget.anchor == Alignment.topRight) effAnchor = Alignment.topLeft;
+                  else if (widget.anchor.x == -1.0) effAnchor = Alignment(1.0, widget.anchor.y);
+                  else if (widget.anchor.x == 1.0) effAnchor = Alignment(-1.0, widget.anchor.y);
+                }
+                return Positioned(
+                  left: 0,
+                  top: 0,
+                  child: CompositedTransformFollower(
+                    link: _link,
+                    targetAnchor: effAnchor,
+                    followerAnchor: effAnchor,
+                    child: _panelWithAnchor(context, effAnchor),
+                  ),
+                );
+              },
             ),
           ],
         ),
