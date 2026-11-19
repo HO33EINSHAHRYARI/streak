@@ -41,6 +41,10 @@ class ExpressTodayHero extends StatelessWidget {
 
   String _date(BuildContext context) {
     final locale = Localizations.localeOf(context).languageCode;
+    if (locale == 'fa') {
+      final now = AppClock.now();
+      return '${now.shamsiWeekdayName}، ${now.shamsiDay} ${now.shamsiMonthName}';
+    }
     final text = DateFormat('EEEE, d MMM', locale).format(AppClock.now());
     return text.isEmpty ? text : text[0].toUpperCase() + text.substring(1);
   }
