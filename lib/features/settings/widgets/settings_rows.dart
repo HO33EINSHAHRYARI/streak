@@ -204,8 +204,13 @@ class NavRow extends StatelessWidget {
         children: [
           if (!stacked && shown != null) shown,
           const SizedBox(width: 6),
-          Icon(LucideIcons.chevronRight,
-              size: 18, color: context.tokens.muted),
+          Icon(
+            Directionality.of(context) == TextDirection.rtl
+                ? LucideIcons.chevronLeft
+                : LucideIcons.chevronRight,
+            size: 18,
+            color: context.tokens.muted,
+          ),
         ],
       ),
       onTap: SheetNote.wrap(subtitle, onTap),
@@ -264,8 +269,13 @@ class LinkRow extends StatelessWidget {
         title,
         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
-      trailing:
-          Icon(LucideIcons.chevronRight, size: 18, color: context.tokens.muted),
+      trailing: Icon(
+        Directionality.of(context) == TextDirection.rtl
+            ? LucideIcons.chevronLeft
+            : LucideIcons.chevronRight,
+        size: 18,
+        color: context.tokens.muted,
+      ),
       onTap: SheetNote.wrap(subtitle, onTap),
     );
   }
@@ -337,8 +347,13 @@ class PickerRow extends StatelessWidget {
               ],
               if (trailing != null) trailing!,
               const SizedBox(width: 6),
-              Icon(LucideIcons.chevronRight,
-                  size: 18, color: context.tokens.muted),
+              Icon(
+                Directionality.of(context) == TextDirection.rtl
+                    ? LucideIcons.chevronLeft
+                    : LucideIcons.chevronRight,
+                size: 18,
+                color: context.tokens.muted,
+              ),
             ],
           ),
         ),
