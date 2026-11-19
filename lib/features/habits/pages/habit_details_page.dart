@@ -115,9 +115,11 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
           final current = habit.completions[date.dayKey]?.count ?? 0;
           final value = await showNumberKeypadDialog(
             context,
-            title: DateFormat.yMMMMd(
-              Localizations.localeOf(context).toString(),
-            ).format(date),
+            title: Localizations.localeOf(context).toString().startsWith('fa')
+                ? '${date.shamsiWeekdayName}، ${date.shamsiDay} ${date.shamsiMonthName}'
+                : DateFormat.yMMMMd(
+                    Localizations.localeOf(context).toString(),
+                  ).format(date),
             value: current,
             unit: habit.unitLabel,
             target: habit.hasGoal ? habit.perDayTarget : null,
