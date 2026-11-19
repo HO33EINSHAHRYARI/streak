@@ -27,8 +27,12 @@ Color heatmapCellColor(
 
   final scheme = context.colors;
   final today = AppClock.today();
+  // Days before the habit existed and days in the future carry no signal:
+  // keep them fully transparent instead of shading the whole grid.
+  if (date.isAfter(today)) return Colors.transparent;
   final beforeCreation = date.atMidnight.isBefore(habit.startedAt);
-  final mark = beforeCreation ? null : dayMarkOf(habit, date);
+  if (beforeCreation) return Colors.transparent;
+  final mark = dayMarkOf(habit, date);
   if (mark != null) return mark.fill;
 
   if (!beforeCreation && !date.isAfter(today) && habit.isNeutralOn(date)) {
@@ -382,6 +386,7 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
           rows: 7,
           cell: cell,
           gap: gap,
+          rtl: fa,
           inkFor: (col, row) => _pathInk(
             context,
             start.addDays(col * 7 + row),
@@ -443,6 +448,7 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
           cell: side,
           gap: gap,
           byRows: true,
+          rtl: fa,
           inkFor: (column, row) => _pathInk(
             context,
             first.addDays(row * 7 + column),
@@ -607,6 +613,7 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
         cell: cell,
         gap: gap,
         top: 14,
+        rtl: fa,
         inkFor: (col, row) =>
             _pathInk(context, start.addDays(col * 7 + row)),
         child: Row(
@@ -629,7 +636,9 @@ class _HabitHeatmapState extends State<HabitHeatmap> {
                   child: isNewMonth
                       ? OverflowBox(
                           maxWidth: 40,
-                          alignment: Alignment.centerLeft,
+                          alignment: fa
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
                           child: Text(
                             fa ? colDate.shamsiMonthName : months.format(colDate),
                             textScaler: MediaQuery.textScalerOf(context)

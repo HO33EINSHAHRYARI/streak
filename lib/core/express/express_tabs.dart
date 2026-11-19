@@ -79,7 +79,11 @@ class _ExpressTabsState extends State<ExpressTabs>
                   final wobble =
                       math.sin(math.pi * _slide.value) * 0.13 * travel;
                   final width = slot * (1 + wobble);
-                  final left = (_position * slot - slot * wobble / 2).clamp(
+                  // Labels mirror in RTL; slide the highlight from that end.
+                  final rtl =
+                      Directionality.of(context) == TextDirection.rtl;
+                  final visual = rtl ? count - 1 - _position : _position;
+                  final left = (visual * slot - slot * wobble / 2).clamp(
                     0.0,
                     box.maxWidth - 8 - width,
                   );

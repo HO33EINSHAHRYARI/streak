@@ -1144,6 +1144,8 @@ class _ViewSelector extends StatelessWidget {
       (HeatmapMode.year, context.l10n.year),
     ];
     final index = options.indexWhere((option) => option.$1 == mode);
+    // The label Row mirrors in RTL, so the highlight must mirror with it.
+    final rtl = Directionality.of(context) == TextDirection.rtl;
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
@@ -1154,7 +1156,10 @@ class _ViewSelector extends StatelessWidget {
         children: [
           Positioned.fill(
             child: AnimatedAlign(
-              alignment: Alignment(-1 + index.toDouble(), 0),
+              alignment: Alignment(
+                rtl ? 1 - index.toDouble() : -1 + index.toDouble(),
+                0,
+              ),
               duration: const Duration(milliseconds: 380),
               curve: Curves.easeOutBack,
               child: FractionallySizedBox(

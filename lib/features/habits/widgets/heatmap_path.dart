@@ -23,6 +23,7 @@ Widget withHeatmapPath({
   required Widget child,
   bool byRows = false,
   double top = 0,
+  bool rtl = false,
 }) {
   if (!on) return child;
   return CustomPaint(
@@ -33,6 +34,7 @@ Widget withHeatmapPath({
       gap: gap,
       top: top,
       byRows: byRows,
+      rtl: rtl,
       inkFor: inkFor,
     ),
     child: child,
@@ -47,6 +49,7 @@ class _HeatmapPathPainter extends CustomPainter {
     required this.gap,
     required this.top,
     required this.byRows,
+    required this.rtl,
     required this.inkFor,
   });
 
@@ -56,6 +59,7 @@ class _HeatmapPathPainter extends CustomPainter {
   final double gap;
   final double top;
   final bool byRows;
+  final bool rtl;
   final Color? Function(int column, int row) inkFor;
 
   List<(int, int)> get _walk {
@@ -85,6 +89,12 @@ class _HeatmapPathPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final walk = _walk;
 
+    if (rtl) {
+      // Cells mirror in RTL; flip the canvas so logical columns line up.
+      canvas.save();
+      canvas.translate(size.width, 0);
+      canvas.scale(-1, 1);
+    }
     for (var i = 0; i < walk.length - 1; i++) {
       final (fromColumn, fromRow) = walk[i];
       final (toColumn, toRow) = walk[i + 1];
@@ -110,6 +120,7 @@ class _HeatmapPathPainter extends CustomPainter {
         canvas.drawLine(middle, edgeTo, _pathPaint(toInk));
       }
     }
+    if (rtl) canvas.restore();
   }
 
   @override
@@ -120,6 +131,7 @@ class _HeatmapPathPainter extends CustomPainter {
       old.gap != gap ||
       old.top != top ||
       old.byRows != byRows ||
+      old.rtl != rtl ||
       old.inkFor != inkFor;
 }
 

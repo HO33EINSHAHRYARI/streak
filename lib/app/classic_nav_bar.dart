@@ -168,6 +168,14 @@ class _ClassicNavBarState extends State<ClassicNavBar>
                   blurRadius: 30,
                   offset: const Offset(0, 12),
                 ),
+                // liquid-glass coloured glow beneath the bar
+                BoxShadow(
+                  color: scheme.primary.withValues(
+                    alpha: dark ? 0.30 : 0.18,
+                  ),
+                  blurRadius: 22,
+                  offset: const Offset(0, 6),
+                ),
                 BoxShadow(
                   color: Colors.black.withValues(alpha: dark ? 0.3 : 0.06),
                   blurRadius: 4,
@@ -179,17 +187,27 @@ class _ClassicNavBarState extends State<ClassicNavBar>
               borderRadius: BorderRadius.circular(_height / 2),
               child: BackdropFilter(
                 enabled: glass,
-                filter: ImageFilter.blur(sigmaX: 22, sigmaY: 22),
+                filter: ImageFilter.blur(sigmaX: 28, sigmaY: 28),
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: scheme.surface.withValues(
-                      alpha: glass ? (dark ? 0.7 : 0.78) : 0.97,
-                    ),
                     borderRadius: BorderRadius.circular(_height / 2),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: dark
+                          ? [
+                              Colors.white.withValues(alpha: 0.14),
+                              Colors.white.withValues(alpha: 0.04),
+                            ]
+                          : [
+                              Colors.white.withValues(alpha: 0.82),
+                              Colors.white.withValues(alpha: 0.58),
+                            ],
+                    ),
                     border: Border.all(
                       color: dark
-                          ? Colors.white.withValues(alpha: 0.09)
-                          : Colors.white.withValues(alpha: 0.85),
+                          ? Colors.white.withValues(alpha: 0.14)
+                          : Colors.white.withValues(alpha: 0.9),
                     ),
                   ),
                   child: AnimatedBuilder(
@@ -205,6 +223,26 @@ class _ClassicNavBarState extends State<ClassicNavBar>
                       return Stack(
                         clipBehavior: Clip.none,
                         children: [
+                          // specular highlight along the top edge
+                          Positioned(
+                            left: 26,
+                            right: 26,
+                            top: 0,
+                            height: 1,
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.white.withValues(alpha: 0.0),
+                                    Colors.white.withValues(
+                                      alpha: dark ? 0.5 : 0.85,
+                                    ),
+                                    Colors.white.withValues(alpha: 0.0),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
                           Positioned(
                             left: rtl ? null : centre - lensWidth / 2,
                             right: rtl ? centre - lensWidth / 2 : null,

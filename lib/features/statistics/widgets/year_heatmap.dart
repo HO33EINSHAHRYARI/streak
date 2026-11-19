@@ -147,7 +147,7 @@ class _YearHeatmapState extends State<YearHeatmap> {
       }
       final habit = widget.habit;
       if (habit != null) return heatmapCellColor(context, habit, date);
-      if (date.isAfter(today)) return empty.withValues(alpha: 0.4);
+      if (date.isAfter(today)) return Colors.transparent;
       final count = widget.dailyCounts[date.dayKey] ?? 0;
       if (count <= 0) return empty;
       final ratio = (count / max).clamp(0.25, 1.0);
@@ -180,7 +180,9 @@ class _YearHeatmapState extends State<YearHeatmap> {
                       child: isNewMonth
                           ? OverflowBox(
                               maxWidth: 55,
-                              alignment: Alignment.centerLeft,
+                              alignment: isFa
+                                  ? Alignment.centerRight
+                                  : Alignment.centerLeft,
                               child: Text(
                                 isFa
                                     ? (_wholeHistory(context) && colDate.shamsiMonth == 1

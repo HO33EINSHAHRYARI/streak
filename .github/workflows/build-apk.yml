@@ -8,7 +8,7 @@ on:
       tag:
         description: 'Release tag'
         required: false
-        default: 'v2.10.5-fa'
+        default: 'v2.10.6-fa'
         type: string
 
 permissions:
@@ -20,7 +20,7 @@ env:
 
 jobs:
   build-apk:
-    name: Build Persian APKs
+    name: Build Persian APK (arm64)
     runs-on: ubuntu-latest
 
     steps:
@@ -43,17 +43,15 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build split APKs
-        run: flutter build apk --release --split-per-abi
+      - name: Build arm64 APK
+        run: flutter build apk --release --target-platform android-arm64
 
-      - name: Rename APKs
+      - name: Rename APK
         run: |
           cd build/app/outputs/flutter-apk
-          mv app-arm64-v8a-release.apk     Streak-Persian-arm64-v8a.apk
-          mv app-armeabi-v7a-release.apk   Streak-Persian-armeabi-v7a.apk
-          mv app-x86_64-release.apk        Streak-Persian-x86_64.apk
+          mv app-release.apk Streak-Persian-arm64-v8a.apk
 
-      - name: Upload APK artifacts
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: streak-persian-apks
@@ -66,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download APK artifacts
+      - name: Download APK artifact
         uses: actions/download-artifact@v4
         with:
           name: streak-persian-apks
@@ -75,20 +73,18 @@ jobs:
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.tag || 'v2.10.5-fa' }}
-          name: 'پناهگاه (Panahgah) - نسخه فارسی اندروید v2.10.5'
+          tag_name: ${{ github.event.inputs.tag || 'v2.10.6-fa' }}
+          name: 'پناهگاه (Panahgah) - نسخه فارسی اندروید v2.10.6'
           body: |
-            ## نسخه نهایی پناهگاه (Panahgah) نسخه v2.10.5 📱
-            
-            - **اصلاح کامل منوی پایین در حالت راست‌چین (RTL):** عملکرد دقیق و بدون خطای لمس و جابه‌جایی تب‌ها
-            - **اصلاح جهت فلش‌ها در بخش تنظیمات:** جهت فلش‌ها به سمت چپ مطابق با اصول طراحی راست‌چین
-            - **تقویم و تاریخ شمسی در تمامی بخش‌ها و فرم افزودن عادات جدید**
-            - **برند اختصاصی پناهگاه با آیکون و پروفایل جدید**
-            - **خروجی اختصاصی اندروید با سرعت اجرای فوق‌العاده**
-            
-            ### فایل‌های دانلودی:
-            - **Streak-Persian-arm64-v8a.apk**: مناسب گوشی‌های جدید ۶۴ بیتی (بیش از ۹۰٪ دستگاه‌ها)
-            - **Streak-Persian-armeabi-v7a.apk**: مناسب گوشی‌های قدیمی ۳۲ بیتی
-            - **Streak-Persian-x86_64.apk**: مناسب شبیه‌سازها
+            ## پناهگاه (Panahgah) نسخه v2.10.6 📱
+
+            - **رفع کامل باگ سوییچ هفته/ماه/سال در راست‌چین:** هایلایت و لمس حالا دقیقاً روی همان گزینه‌ای می‌افتد که انتخاب می‌کنید
+            - **هیت‌مپ‌های تمیزتر:** روزهای قبل از ساخت عادت و روزهای آینده دیگر خاکستری/رنگی نیستند و جدول واقعاً خالی دیده می‌شود
+            - **همه نمودارها و هیت‌مپ‌ها راست‌چین شدند:** زمان از راست به چپ جریان دارد (سیر تکاملی، تکمیل ماه‌ها، ساعات تمرکز، نوارهای هفته/ماه/سال)
+            - **منوی پایین کلاسیک با جلوه شیشه‌ای (Liquid Glass):** بلور قوی‌تر، درخشش لبه شیشه و سایه رنگی نرم
+            - **تقویم شمسی کامل** در آمار، فوکوس، تکلیف‌ها و ویجت‌ها
+
+            ### فایل دانلودی:
+            - **Streak-Persian-arm64-v8a.apk**: مخصوص گوشی‌های ۶۴ بیتی (arm64-v8a)
           files: |
             release-assets/Streak-Persian-*.apk

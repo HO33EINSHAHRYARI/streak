@@ -93,6 +93,11 @@ class ValueBars extends StatelessWidget {
       whole: axisFormat == null && values.every((v) => v == v.roundToDouble()),
     );
     final maxY = scale.maxY;
+    // Time flows right-to-left in RTL: mirror the group order.
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    final order = [
+      for (var i = 0; i < values.length; i++) rtl ? values.length - 1 - i : i,
+    ];
 
     return SizedBox(
       height: height,
@@ -141,7 +146,7 @@ class ValueBars extends StatelessWidget {
                 : (event, response) {
                     final spot = response?.spot;
                     if (event is FlTapUpEvent && spot != null) {
-                      onSelect!(spot.touchedBarGroupIndex);
+                      onSelect!(order[spot.touchedBarGroupIndex]);
                     }
                   },
             touchTooltipData: BarTouchTooltipData(
@@ -186,7 +191,7 @@ class ValueBars extends StatelessWidget {
             ),
           ),
           barGroups: [
-            for (var i = 0; i < values.length; i++)
+            for (final i in order)
               BarChartGroupData(
                 x: i,
                 barRods: [

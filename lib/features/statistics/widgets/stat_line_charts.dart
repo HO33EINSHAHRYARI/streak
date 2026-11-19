@@ -62,6 +62,9 @@ class TrendChart extends StatelessWidget {
     final maxY = scale.maxY;
     final chartLocale = Localizations.localeOf(context).toString();
     String format(DateTime d) => AppDates.dayMonth(d, chartLocale);
+    // Time flows right-to-left in RTL; mirror the spot order to match.
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    int toVisual(int i) => rtl ? values.length - 1 - i : i;
     final average = values.reduce((a, b) => a + b) / values.length;
     final label = this.format ?? (double v) => '${v.round()}$suffix';
 
@@ -116,7 +119,7 @@ class TrendChart extends StatelessWidget {
                       for (final spot in spots)
                         LineTooltipItem(
                           '${label(spot.y)}\n'
-                          '${isFa ? startDate.add(Duration(days: spot.x.toInt())).shamsiShort : format(startDate.add(Duration(days: spot.x.toInt())))}',
+                          '${isFa ? startDate.add(Duration(days: values.length - 1 - spot.x.toInt())).shamsiShort : format(startDate.add(Duration(days: values.length - 1 - spot.x.toInt())))}',
                           _Chrome.tooltipText(context),
                         ),
                     ];
@@ -160,7 +163,7 @@ class TrendChart extends StatelessWidget {
                 LineChartBarData(
                   spots: [
                     for (var i = 0; i < values.length; i++)
-                      FlSpot(i.toDouble(), values[i]),
+                      FlSpot(toVisual(i).toDouble(), values[i]),
                   ],
                   isCurved: !stepped,
                   curveSmoothness: 0.28,
@@ -230,6 +233,9 @@ class HourArea extends StatelessWidget {
     for (var i = 1; i < values.length; i++) {
       if (values[i] > values[peak]) peak = i;
     }
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    int toVisual(int i) => rtl ? 23 - i : i;
+    int toLogical(int x) => rtl ? 23 - x : x;
 
     return SizedBox(
       height: height,
@@ -252,7 +258,7 @@ class HourArea extends StatelessWidget {
               getTooltipItems: (spots) => [
                 for (final spot in spots)
                   LineTooltipItem(
-                    '${spot.y.round()}\n${spot.x.toInt().toString().padLeft(2, '0')}:00',
+                    '${spot.y.round()}\n${toLogical(spot.x.toInt()).toString().padLeft(2, '0')}:00',
                     _Chrome.tooltipText(context),
                   ),
               ],
@@ -275,7 +281,7 @@ class HourArea extends StatelessWidget {
                 getTitlesWidget: (value, _) => Padding(
                   padding: const EdgeInsets.only(top: 6),
                   child: Text(
-                    '${value.toInt().toString().padLeft(2, '0')}h',
+                    '${toLogical(value.toInt()).toString().padLeft(2, '0')}h',
                     textScaler: axisTextScaler(context),
                     style: statLabel(context),
                   ),
@@ -288,7 +294,7 @@ class HourArea extends StatelessWidget {
             verticalLines: [
               if (maxValue > 0)
                 VerticalLine(
-                  x: peak.toDouble(),
+                  x: toVisual(peak).toDouble(),
                   color: color.withValues(alpha: 0.55),
                   strokeWidth: 1,
                   dashArray: const [4, 4],
@@ -307,7 +313,7 @@ class HourArea extends StatelessWidget {
             LineChartBarData(
               spots: [
                 for (var i = 0; i < values.length; i++)
-                  FlSpot(i.toDouble(), values[i].toDouble()),
+                  FlSpot(toVisual(i).toDouble(), values[i].toDouble()),
               ],
               isCurved: true,
               curveSmoothness: 0.25,
@@ -379,6 +385,9 @@ class MonthlyLine extends StatelessWidget {
     for (var i = 1; i < shown.length; i++) {
       if (shown[i] > shown[best]) best = i;
     }
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    int toVisual(int i) => rtl ? 11 - i : i;
+    int toLogical(int x) => rtl ? 11 - x : x;
 
     return SizedBox(
       height: height,
@@ -407,7 +416,7 @@ class MonthlyLine extends StatelessWidget {
                 interval: 1,
                 reservedSize: 26,
                 getTitlesWidget: (value, _) {
-                  final index = value.round();
+                  final index = toLogical(value.round());
                   if (index < 0 || index > 11) return const SizedBox.shrink();
                   final peak = maxValue > 0 && index == best;
                   return Padding(
@@ -454,7 +463,7 @@ class MonthlyLine extends StatelessWidget {
               getTooltipItems: (spots) => [
                 for (final spot in spots)
                   LineTooltipItem(
-                    '${spot.y.round()}\n${full[spot.x.round().clamp(0, 11)]}',
+                    '${spot.y.round()}\n${full[toLogical(spot.x.round()).clamp(0, 11)]}',
                     _Chrome.tooltipText(context),
                   ),
               ],
@@ -483,7 +492,7 @@ class MonthlyLine extends StatelessWidget {
             LineChartBarData(
               spots: [
                 for (var i = 0; i <= last; i++)
-                  FlSpot(i.toDouble(), values[i].toDouble()),
+                  FlSpot(toVisual(i).toDouble(), values[i].toDouble()),
               ],
               isCurved: true,
               curveSmoothness: 0.28,
@@ -497,7 +506,7 @@ class MonthlyLine extends StatelessWidget {
               dotData: FlDotData(
                 show: true,
                 getDotPainter: (spot, _, __, ___) => FlDotCirclePainter(
-                  radius: maxValue > 0 && spot.x.round() == best ? 5 : 3.4,
+                  radius: maxValue > 0 && toLogical(spot.x.round()) == best ? 5 : 3.4,
                   color: color,
                   strokeWidth: 2.5,
                   strokeColor: context.colors.surface,

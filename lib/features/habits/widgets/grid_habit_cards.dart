@@ -619,6 +619,7 @@ class _GridYearStripState extends State<_GridYearStrip> {
         .addDays(-7 * (_weeks - 1));
     final locale = Localizations.localeOf(context).toString();
     final fa = AppDates.isFa(locale);
+    final rtl = Directionality.of(context) == ui.TextDirection.rtl;
     final months = DateFormat.MMM(locale);
     final path = heatmapPathOn(context);
     final gap = path ? heatmapPathGap : 3.0;
@@ -635,9 +636,7 @@ class _GridYearStripState extends State<_GridYearStrip> {
       }
     });
 
-    return Directionality(
-      textDirection: ui.TextDirection.ltr,
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
         controller: _scroll,
         scrollDirection: Axis.horizontal,
       child: withHeatmapPath(
@@ -647,6 +646,7 @@ class _GridYearStripState extends State<_GridYearStrip> {
         cell: _cell,
         gap: gap,
         top: 14,
+        rtl: rtl,
         inkFor: (column, row) {
           final date = start.addDays(column * 7 + row);
           return widget.habit.isCompletedOn(date)
@@ -656,7 +656,8 @@ class _GridYearStripState extends State<_GridYearStrip> {
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTapUp: (details) {
-            final column = (details.localPosition.dx / pitch).floor();
+            final raw = (details.localPosition.dx / pitch).floor();
+            final column = rtl ? _weeks - 1 - raw : raw;
             final row = ((details.localPosition.dy - 14) / pitch).floor();
             if (column < 0 || column >= _weeks || row < 0 || row > 6) return;
             final date = start.addDays(column * 7 + row);
@@ -689,7 +690,9 @@ class _GridYearStripState extends State<_GridYearStrip> {
                           : start.addDays(column * 7).month !=
                               start.addDays((column - 1) * 7).month))
                     Positioned(
-                      left: column * pitch,
+                      left: rtl
+                          ? (_weeks - 1 - column) * pitch
+                          : column * pitch,
                       top: 0,
                       height: 14,
                       child: Text(
@@ -710,7 +713,6 @@ class _GridYearStripState extends State<_GridYearStrip> {
           ),
         ),
       ),
-    ),
   );
 }
 }
