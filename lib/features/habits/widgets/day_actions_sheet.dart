@@ -54,7 +54,9 @@ Future<void> showDayActionsSheet(
             Padding(
               padding: const EdgeInsets.only(left: 4, bottom: 12),
               child: Text(
-                DateFormat.yMMMMEEEEd(locale).format(date),
+                locale.startsWith('fa')
+                    ? '${date.shamsiWeekdayName}، ${date.shamsiDay} ${date.shamsiMonthName} ${date.shamsiYear}'
+                    : DateFormat.yMMMMEEEEd(locale).format(date),
                 style: sheetTitleStyle(context, size: 17),
               ),
             ),
@@ -181,7 +183,9 @@ class _DayStatus extends StatelessWidget {
   Future<void> _type(BuildContext context, Habit habit, double current) async {
     final value = await showNumberKeypadDialog(
       context,
-      title: DateFormat.yMMMMd(Localizations.localeOf(context).toString()).format(date),
+      title: Localizations.localeOf(context).toString().startsWith('fa')
+          ? '${date.shamsiWeekdayName}، ${date.shamsiDay} ${date.shamsiMonthName}'
+          : DateFormat.yMMMMd(Localizations.localeOf(context).toString()).format(date),
       value: current,
       unit: habit.unitLabel,
       target: habit.goalOn(date) > 0 ? habit.goalOn(date) : null,
