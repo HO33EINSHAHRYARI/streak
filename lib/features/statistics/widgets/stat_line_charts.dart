@@ -111,11 +111,15 @@ class TrendChart extends StatelessWidget {
                   tooltipRoundedRadius: 10,
                   getTooltipItems: (spots) => [
                     for (final spot in spots)
-                      LineTooltipItem(
-                        '${label(spot.y)}\n'
-                        '${format.format(startDate.add(Duration(days: spot.x.toInt())))}',
-                        _Chrome.tooltipText(context),
-                      ),
+                      Builder(builder: (ctx) {
+                        final spotDate = startDate.add(Duration(days: spot.x.toInt()));
+                        final isFa = Localizations.localeOf(context).toString().startsWith('fa');
+                        final dateStr = isFa ? spotDate.shamsiShort : format.format(spotDate);
+                        return LineTooltipItem(
+                          '${label(spot.y)}\n$dateStr',
+                          _Chrome.tooltipText(context),
+                        );
+                      }),
                   ],
                 ),
               ),
@@ -354,7 +358,10 @@ class MonthlyLine extends StatelessWidget {
     final short = MonthLabels.short(locale);
     final full = MonthLabels.full(locale);
     final now = AppClock.now();
-    final last = year >= now.year ? now.month - 1 : 11;
+    final isFa = locale.startsWith('fa');
+    final last = isFa
+        ? (year >= now.shamsiYear ? now.shamsiMonth - 1 : 11)
+        : (year >= now.year ? now.month - 1 : 11);
     final shown = values.take(last + 1).toList();
     final maxValue = shown.fold(0, math.max);
     final scale = axisScale(
@@ -409,7 +416,7 @@ class MonthlyLine extends StatelessWidget {
                       short[index],
                       textScaler: axisTextScaler(context),
                       style: TextStyle(
-                        fontSize: 10.5,
+                        fontSize: 9.5,
                         fontWeight: peak ? FontWeight.w800 : FontWeight.w600,
                         color: peak
                             ? color
