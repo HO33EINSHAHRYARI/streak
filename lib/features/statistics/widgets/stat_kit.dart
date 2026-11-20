@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:streak/core/widgets/glass.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/features/settings/state/settings_controller.dart';
@@ -190,7 +189,7 @@ class StatCard extends StatelessWidget {
     final titleSize = MediaQuery.textScalerOf(context).scale(16);
     final titleLines = titleSize > 19 ? 3 : 2;
     final titleHeight = titleSize * 1.25 * titleLines;
-    return AppCard(
+    return Card(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
         child: Column(

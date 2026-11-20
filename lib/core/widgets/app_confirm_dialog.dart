@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/extensions/color_extensions.dart';
@@ -25,11 +24,13 @@ Future<bool?> showAppConfirmDialog(
       final scheme = dialogContext.colors;
       final accent = danger ? dialogContext.tokens.danger : scheme.primary;
       return Dialog(
-        backgroundColor: Colors.transparent,
+        backgroundColor: scheme.surface,
         insetPadding: const EdgeInsets.symmetric(horizontal: 40),
-        child: GlassContainer(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Padding(
           padding: const EdgeInsets.fromLTRB(22, 24, 22, 18),
-          shape: const LiquidRoundedSuperellipse(borderRadius: 24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

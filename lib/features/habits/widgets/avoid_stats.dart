@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:streak/core/widgets/glass.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:streak/core/widgets/directional_icons.dart';
@@ -349,7 +348,7 @@ class _GoalCard extends StatelessWidget {
     if (express) {
       return ExpressCard(padding: const EdgeInsets.all(18), child: content);
     }
-    return AppCard(
+    return Card(
       child: Padding(padding: const EdgeInsets.all(16), child: content),
     );
   }

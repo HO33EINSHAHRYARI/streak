@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:streak/core/widgets/glass.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
@@ -118,7 +117,7 @@ class SavedMoneyCard extends StatelessWidget {
     final locale = Localizations.localeOf(context).toString();
     final symbol = context.watch<SettingsController>().currency;
 
-    return AppCard(
+    return Card(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
         child: Row(

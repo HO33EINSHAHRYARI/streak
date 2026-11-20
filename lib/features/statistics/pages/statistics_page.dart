@@ -138,7 +138,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
               ),
               const SizedBox(height: 16),
               StatReveal(
-                child: AppCard(
+                child: Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: YearHeatmap(

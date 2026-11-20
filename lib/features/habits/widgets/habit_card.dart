@@ -64,7 +64,7 @@ class HabitCard extends StatelessWidget {
       corners: corners,
       child: Pressable(
       scale: 0.98,
-      child: AppCard(
+      child: Card(
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: corners,

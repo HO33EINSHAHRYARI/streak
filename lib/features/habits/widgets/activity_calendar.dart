@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:streak/core/widgets/glass.dart';
 import 'package:intl/intl.dart';
 import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:streak/app/theme/app_tokens.dart';
@@ -106,7 +105,7 @@ class _ActivityCalendarState extends State<ActivityCalendar> {
     final weeks = _weeksFor(weekStart);
     final days = _daysFor(weekStart, weeks);
 
-    return AppCard(
+    return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

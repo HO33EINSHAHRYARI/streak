@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:streak/core/widgets/glass.dart';
 import 'package:flutter/rendering.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
@@ -273,7 +272,7 @@ class _IconPickerState extends State<IconPicker> {
         ? HabitEmojis.categories[_category]!
         : HabitIcons.categories[_category]!;
 
-    return AppCard(
+    return Card(
       child: Padding(
         padding: const EdgeInsets.all(14),
         child: Column(

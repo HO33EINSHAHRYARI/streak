@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:streak/core/widgets/glass.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/i18n/l10n.dart';
@@ -146,7 +145,7 @@ class _StatBox extends StatelessWidget {
         ),
       );
     }
-    return AppCard(
+    return Card(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
         child: Column(
