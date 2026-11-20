@@ -228,21 +228,30 @@ class HabitRanking extends StatefulWidget {
 
 class _HabitRankingState extends State<HabitRanking>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 1100),
-  )..forward();
+  // Created in initState, not a `late final` field: a late initializer that
+  // runs during dispose() would create a ticker on a deactivated element
+  // (crash when the stats page is left before the first paint).
+  AnimationController? _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1100),
+    )..forward();
+  }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
   double _step(int index) {
     final start = (index * 0.11).clamp(0.0, 0.5);
     return Curves.easeOutCubic.transform(
-      ((_controller.value - start) / 0.5).clamp(0.0, 1.0),
+      ((_controller!.value - start) / 0.5).clamp(0.0, 1.0),
     );
   }
 
@@ -276,7 +285,7 @@ class _HabitRankingState extends State<HabitRanking>
                 Expanded(
                   child: LayoutBuilder(
                     builder: (context, box) => AnimatedBuilder(
-                      animation: _controller,
+                      animation: _controller!,
                       builder: (context, _) {
                         final t = _step(i);
                         final share = max == 0 ? 0.0 : entries[i].count / max;
