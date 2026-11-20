@@ -36,9 +36,16 @@ class GlassStyle {
   /// instead of assuming the theme's onPrimary — custom themes (Nord etc.)
   /// often have pale primaries where white text is unreadable.
   static Color inkOn(BuildContext context, Color tint) {
+    // The glass brightens the backdrop (specular + light pattern), so in the
+    // light theme approximate the effective background with white — blending
+    // over the darker surface under-estimated lightness and picked white
+    // ink that was unreadable on pale custom themes (Nord).
+    final base = _dark(context)
+        ? Theme.of(context).colorScheme.surface
+        : Colors.white;
     final blended = Color.alphaBlend(
       tint.withValues(alpha: tintStrength(context)),
-      Theme.of(context).colorScheme.surface,
+      base,
     );
     return blended.computeLuminance() > 0.5
         ? const Color(0xFF1C1C1E)

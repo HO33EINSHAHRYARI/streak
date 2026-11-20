@@ -88,6 +88,15 @@ class _TodoDealState extends State<TodoDeal>
         SpringSimulation(spring, _controller.value, target, 0),
       );
     });
+    // Safety net: if the ticker is muted mid-deal (TickerMode flips during a
+    // locale/theme rebuild), the spring never progresses and the card stays
+    // frozen shifted and clipped. Force-settle shortly after it should end.
+    Future.delayed(delay + const Duration(milliseconds: 1600), () {
+      if (!mounted) return;
+      if (!_controller.isAnimating && _controller.value < 0.98) {
+        _controller.value = target;
+      }
+    });
   }
 
   void _measure() {
@@ -208,6 +217,12 @@ class _TodoShiftState extends State<TodoShift>
     }
     _from = before + _offset - at;
     _slide.forward(from: 0);
+    Future.delayed(const Duration(milliseconds: 900), () {
+      if (!mounted) return;
+      if (!_slide.isAnimating && _slide.value < 1) {
+        _slide.value = 1;
+      }
+    });
   }
 
   @override
