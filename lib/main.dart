@@ -5,6 +5,7 @@ import 'dart:ui' show AppExitResponse;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/startup_failure.dart';
 import 'package:streak/app/streak_app.dart';
@@ -42,6 +43,7 @@ import 'package:streak/services/widget_action_service.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
+    await LiquidGlassWidgets.initialize(enablePerformanceMonitor: false);
     await _startup();
   } catch (e, s) {
     debugPrint('Streak could not start: $e');
@@ -184,7 +186,10 @@ void _run() {
           },
         ),
       ],
-      child: const StreakApp(),
+      child: LiquidGlassWidgets.wrap(
+        child: const StreakApp(),
+        adaptiveQuality: false,
+      ),
     ),
   );
 }

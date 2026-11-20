@@ -46,20 +46,17 @@ class StreakApp extends StatelessWidget {
           () => context.read<HabitsController>().asMap,
         );
         final media = MediaQuery.of(context);
-        return Directionality(
-          textDirection: TextDirection.rtl,
-          child: MediaQuery(
-            data: settings.animations
-                ? media
-                : media.copyWith(disableAnimations: true),
-            child: AnnotatedRegion<SystemUiOverlayStyle>(
-              value: AppTheme.systemBars(Theme.of(context).brightness),
-              child: AppLockGate(
-                child: AppBackground(
-                  child: _DesktopFrame(
-                    shell: settings.onboardingDone,
-                    child: SheetSwipeClose(child: child ?? const SizedBox.shrink()),
-                  ),
+        return MediaQuery(
+          data: settings.animations
+              ? media
+              : media.copyWith(disableAnimations: true),
+          child: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: AppTheme.systemBars(Theme.of(context).brightness),
+            child: AppLockGate(
+              child: AppBackground(
+                child: _DesktopFrame(
+                  shell: settings.onboardingDone,
+                  child: SheetSwipeClose(child: child ?? const SizedBox.shrink()),
                 ),
               ),
             ),

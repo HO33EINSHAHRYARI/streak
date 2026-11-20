@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
-import 'package:streak/app/classic_nav_bar.dart';
+import 'package:streak/app/glass_nav_bar.dart';
 import 'package:streak/core/express/express_nav.dart';
 import 'package:streak/core/express/express_shapes.dart';
 import 'package:streak/core/express/express_surface.dart';
@@ -23,7 +23,6 @@ import 'package:streak/core/routing/back_handlers.dart';
 import 'package:streak/core/shortcuts/app_shortcuts.dart';
 import 'package:streak/core/utils/responsive.dart';
 import 'package:streak/core/widgets/page_motion.dart';
-import 'package:streak/core/widgets/glass.dart';
 import 'package:streak/features/focus/state/focus_actions.dart';
 import 'package:streak/features/focus/state/focus_controller.dart';
 import 'package:streak/features/habits/data/habit.dart';
@@ -402,25 +401,13 @@ class _HomeShellState extends State<HomeShell>
             ),
           ),
           ),
-          if (!express)
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: EdgeBlur(
-                top: false,
-                height: 104 + MediaQuery.viewPaddingOf(context).bottom,
-                sigma: 12,
-                shade: 0.6,
-              ),
-            ),
           Positioned(
             left: 0,
             right: 0,
             bottom: MediaQuery.viewPaddingOf(context).bottom + 12,
-            child: Center(
-              child: express
-                  ? ExpressNavBar(
+            child: express
+                ? Center(
+                    child: ExpressNavBar(
                       items: [
                         for (final tab in tabs)
                           ExpressNavItem(
@@ -431,17 +418,17 @@ class _HomeShellState extends State<HomeShell>
                       ],
                       index: tabs.indexOf(current),
                       onSelect: (i) => _select(tabs, tabs[i]),
-                    )
-                  : ClassicNavBar(
-                      items: [
-                        for (final tab in tabs)
-                          (icon: _iconOf(tab), label: _labelOf(context, tab)),
-                      ],
-                      index: tabs.indexOf(current),
-                      onSelect: (i) => _select(tabs, tabs[i]),
-                      compact: _compact,
                     ),
-            ),
+                  )
+                : GlassNavBar(
+                    items: [
+                      for (final tab in tabs)
+                        (icon: _iconOf(tab), label: _labelOf(context, tab)),
+                    ],
+                    index: tabs.indexOf(current),
+                    onSelect: (i) => _select(tabs, tabs[i]),
+                    compact: _compact,
+                  ),
           ),
         ],
       ),
