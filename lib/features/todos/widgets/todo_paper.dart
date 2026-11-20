@@ -596,13 +596,13 @@ class PaperLanes extends StatelessWidget {
               for (final (index, lane) in lanes.indexed)
                 SliverPadding(
                   padding: EdgeInsetsDirectional.only(
-                    start: index == 0 ? 0 : 14,
-                    end: index == columns - 1 ? 0 : 14,
+                    start: index == 0 ? 0 : 6,
+                    end: index == columns - 1 ? 0 : 6,
                   ),
                   sliver: SliverList.builder(
                     itemCount: lane.length,
                     itemBuilder: (context, i) => Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.only(bottom: 12),
                       child: lane[i](),
                     ),
                   ),

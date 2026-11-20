@@ -25,32 +25,6 @@ class GlassStyle {
       ? Colors.white.withValues(alpha: 0.10)
       : Colors.white.withValues(alpha: 0.30);
 
-  static bool dark(BuildContext context) => _dark(context);
-
-  /// Strength a colored tint is rendered at over the glass.
-  static double tintStrength(BuildContext context) => 0.45;
-
-  /// Readable ink (near-black or white) for content sitting on a glass
-  /// surface tinted with [tint]. Computes the effective blended background
-  /// instead of assuming the theme's onPrimary — custom themes (Nord etc.)
-  /// often have pale primaries where white text is unreadable.
-  static Color inkOn(BuildContext context, Color tint) {
-    // The glass brightens the backdrop (specular + light pattern), so in the
-    // light theme approximate the effective background with white — blending
-    // over the darker surface under-estimated lightness and picked white
-    // ink that was unreadable on pale custom themes (Nord).
-    final base = _dark(context)
-        ? Theme.of(context).colorScheme.surface
-        : Colors.white;
-    final blended = Color.alphaBlend(
-      tint.withValues(alpha: tintStrength(context)),
-      base,
-    );
-    return blended.computeLuminance() > 0.5
-        ? const Color(0xFF1C1C1E)
-        : Colors.white;
-  }
-
   static List<BoxShadow> lift(BuildContext context) => _dark(context)
       ? const []
       : [
@@ -169,26 +143,15 @@ class GlassPill extends StatelessWidget {
         onTap: onTap,
         child: GlassContainer(
           height: height,
-          padding: EdgeInsets.zero,
-          clipBehavior: Clip.antiAlias,
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          alignment: Alignment.center,
           shape: LiquidRoundedSuperellipse(borderRadius: height / 2),
-          child: Stack(
-            children: [
-              // A colored tint stays glassy: a half-strength colour layer
-              // inside the glass keeps the lens and refraction visible
-              // under the colour.
-              if (tint != null)
-                Positioned.fill(
-                  child: ColoredBox(
-                    color: tint.withValues(alpha: 0.45),
-                  ),
-                ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                child: child,
-              ),
-            ],
-          ),
+          // A colored tint stays glassy: half strength so the lens and
+          // refraction remain visible under the colour.
+          color: tint == null
+              ? GlassStyle.tint(context)
+              : tint.withValues(alpha: 0.5),
+          child: child,
         ),
       ),
     );
