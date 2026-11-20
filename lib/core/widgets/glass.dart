@@ -25,6 +25,8 @@ class GlassStyle {
       ? Colors.white.withValues(alpha: 0.10)
       : Colors.white.withValues(alpha: 0.30);
 
+  static bool dark(BuildContext context) => _dark(context);
+
   static List<BoxShadow> lift(BuildContext context) => _dark(context)
       ? const []
       : [
@@ -146,11 +148,14 @@ class GlassPill extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14),
           alignment: Alignment.center,
           shape: LiquidRoundedSuperellipse(borderRadius: height / 2),
-          // A colored tint stays glassy: half strength so the lens and
-          // refraction remain visible under the colour.
+          // A colored tint stays glassy: the lens and refraction remain
+          // visible under the colour, while strong enough that white
+          // labels still read in the light theme.
           color: tint == null
               ? GlassStyle.tint(context)
-              : tint.withValues(alpha: 0.5),
+              : tint.withValues(
+                  alpha: GlassStyle.dark(context) ? 0.55 : 0.75,
+                ),
           child: child,
         ),
       ),

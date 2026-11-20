@@ -195,7 +195,17 @@ class _TodoShiftState extends State<TodoShift>
         Offset(0, scroll!.position.pixels);
     final before = widget.spots[widget.id];
     widget.spots[widget.id] = at;
-    if (before == null || (before - at).distance < 1) return;
+    if (before == null) return;
+    final delta = (before + _offset - at).distance;
+    // Huge deltas mean an overhauled layout (locale flip, section collapse):
+    // snapping is correct there, and animating can freeze cards mid-shift
+    // when the slide ticker is interrupted by the same rebuild.
+    if (delta < 1) return;
+    if (delta > 120) {
+      _from = Offset.zero;
+      _slide.value = 1;
+      return;
+    }
     _from = before + _offset - at;
     _slide.forward(from: 0);
   }

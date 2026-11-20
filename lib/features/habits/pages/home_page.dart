@@ -1364,7 +1364,9 @@ class _EmptyState extends StatelessWidget {
         child: GlassContainer(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: const LiquidRoundedSuperellipse(borderRadius: 16),
-          color: context.colors.primary.withValues(alpha: 0.5),
+          color: context.colors.primary.withValues(
+            alpha: GlassStyle.dark(context) ? 0.55 : 0.75,
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
