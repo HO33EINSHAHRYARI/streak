@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:streak/core/widgets/glass.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
@@ -946,7 +947,7 @@ class _SubstepsEditorState extends State<SubstepsEditor> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return AppCard(
       semanticContainer: false,
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -1096,7 +1097,7 @@ class QuantitativeFields extends StatelessWidget {
     final time = quantKind == QuantKind.time;
     final unit =
         time ? context.l10n.unit_min_short : unitController.text.trim();
-    return Card(
+    return AppCard(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

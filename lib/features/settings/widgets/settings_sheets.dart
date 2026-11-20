@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/core/i18n/app_locale.dart';
@@ -17,14 +18,33 @@ import 'package:streak/features/settings/state/settings_controller.dart';
 Future<void> showSheet(BuildContext context, WidgetBuilder builder) {
   return showModalBottomSheet<void>(
     context: context,
-    showDragHandle: true,
+    showDragHandle: false,
     isScrollControlled: true,
     useSafeArea: true,
+    backgroundColor: Colors.transparent,
     constraints: BoxConstraints(
       maxWidth: phoneWidth,
       maxHeight: MediaQuery.sizeOf(context).height * 0.8,
     ),
-    builder: builder,
+    builder: (sheetContext) => GlassContainer(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
+      shape: const LiquidRoundedSuperellipse(borderRadius: 28),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 40,
+            height: 4,
+            margin: const EdgeInsets.only(bottom: 10),
+            decoration: BoxDecoration(
+              color: sheetContext.colors.onSurface.withValues(alpha: 0.25),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          builder(sheetContext),
+        ],
+      ),
+    ),
   );
 }
 

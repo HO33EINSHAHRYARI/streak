@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:streak/core/widgets/glass.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/i18n/date_labels.dart';
@@ -23,7 +24,7 @@ class CompactCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return AppCard(
       child: Padding(padding: EdgeInsets.all(padding), child: child),
     );
   }

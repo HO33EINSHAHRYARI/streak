@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:streak/core/widgets/glass.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
@@ -63,7 +64,7 @@ class QuantitativeProgress extends StatelessWidget {
       await controller.addProgress(habit.id, today, delta);
     }
 
-    return Card(
+    return AppCard(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
         child: Column(

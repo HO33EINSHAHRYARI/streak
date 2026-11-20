@@ -36,6 +36,41 @@ class GlassStyle {
         ];
 }
 
+/// Material-[Card] replacement backed by real liquid glass. Reads the
+/// active theme's card shape so every app style keeps its own radius, and
+/// tolerates the Card-only arguments call sites may pass.
+class AppCard extends StatelessWidget {
+  const AppCard({
+    super.key,
+    this.child,
+    this.margin,
+    this.clipBehavior,
+    this.shape,
+    this.semanticContainer,
+  });
+
+  final Widget? child;
+  final EdgeInsetsGeometry? margin;
+  final Clip? clipBehavior;
+  final ShapeBorder? shape;
+  final bool? semanticContainer;
+
+  @override
+  Widget build(BuildContext context) {
+    final effectiveShape = shape ?? Theme.of(context).cardTheme.shape;
+    final radius = effectiveShape is RoundedRectangleBorder
+        ? (effectiveShape.borderRadius as BorderRadius).topLeft.x
+        : 30.0;
+    return GlassCard(
+      padding: EdgeInsets.zero,
+      margin: margin,
+      clipBehavior: clipBehavior ?? Clip.none,
+      shape: LiquidRoundedSuperellipse(borderRadius: radius),
+      child: child,
+    );
+  }
+}
+
 class Pressable extends StatefulWidget {
   const Pressable({
     super.key,

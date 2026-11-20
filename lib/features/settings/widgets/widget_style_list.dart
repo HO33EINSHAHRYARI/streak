@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:streak/core/widgets/glass.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:streak/core/i18n/l10n.dart';
@@ -51,7 +52,7 @@ class _WidgetTileState extends State<_WidgetTile> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Card(
+    return AppCard(
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
       child: InkWell(

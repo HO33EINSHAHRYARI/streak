@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:streak/core/widgets/glass.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
@@ -164,7 +165,7 @@ class MissReasonsTile extends StatelessWidget {
         ],
       );
     } else {
-      tile = Card(
+      tile = AppCard(
         child: ListTile(
           onTap: open,
           leading: Icon(LucideIcons.messageCircleQuestion, size: 22, color: context.colors.primary),

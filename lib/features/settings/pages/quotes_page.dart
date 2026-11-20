@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:streak/core/widgets/glass.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
@@ -90,7 +91,7 @@ class QuotesPage extends StatelessWidget {
         ListView(
         padding: context.pagePadding(16, 12, 16, 96),
         children: [
-          Card(
+          AppCard(
             child: NavRow(
               icon: LucideIcons.sparkles,
               title: context.l10n.quotes_which,

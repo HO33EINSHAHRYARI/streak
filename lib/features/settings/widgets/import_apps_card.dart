@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:streak/core/widgets/glass.dart';
 import 'package:streak/core/widgets/directional_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
@@ -41,7 +42,7 @@ class ImportAppsCard extends StatelessWidget {
         child: MinimalCard(padding: EdgeInsets.zero, child: body),
       );
     }
-    return Card(
+    return AppCard(
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
       child: body,

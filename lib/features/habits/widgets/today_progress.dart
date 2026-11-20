@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:streak/core/widgets/glass.dart';
 import 'package:intl/intl.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/i18n/l10n.dart';
@@ -94,7 +95,7 @@ class _TodayProgressState extends State<TodayProgress>
     final total = widget.total;
     final allDone = total > 0 && done == total;
 
-    return Card(
+    return AppCard(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
         child: Row(

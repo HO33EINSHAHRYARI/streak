@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:streak/core/widgets/glass.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
@@ -90,7 +91,7 @@ class SecondChancesCard extends StatelessWidget {
             ? ExpressCard(padding: padding, child: row)
             : settings.isMinimalStyle
             ? Padding(padding: const EdgeInsets.symmetric(vertical: 6), child: row)
-            : Card(child: Padding(padding: padding, child: row)),
+            : AppCard(child: Padding(padding: padding, child: row)),
       ),
     );
   }

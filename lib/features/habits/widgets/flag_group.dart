@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:streak/core/widgets/glass.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/express/express_surface.dart';
@@ -42,7 +43,7 @@ class FlagGroup extends StatelessWidget {
         child: MinimalCard(padding: EdgeInsets.zero, child: scoped),
       );
     }
-    return Card(
+    return AppCard(
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
       child: scoped,

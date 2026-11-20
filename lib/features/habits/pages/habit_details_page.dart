@@ -294,7 +294,7 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
                 ],
                 if (habit.hasSubsteps) ...[
                   SectionLabel(context.l10n.todays_checklist),
-                  Card(
+                  AppCard(
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: HabitChecklist(habit: habit, header: true),
@@ -597,7 +597,7 @@ class _ActivityView extends StatelessWidget {
         showNotes: showNotes,
       );
     }
-    return Card(
+    return AppCard(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: HabitHeatmap(
@@ -669,7 +669,7 @@ class _VacationTile extends StatelessWidget {
       );
     }
 
-    return Card(
+    return AppCard(
       child: ListTile(
         onTap: () => showVacationSheet(context, habit: habit),
         leading: Icon(LucideIcons.palmtree, size: 22, color: color),
@@ -835,7 +835,7 @@ class _FocusTile extends StatelessWidget {
 
     final express = context.watch<SettingsController>().isExpressStyle;
 
-    return Card(
+    return AppCard(
       child: Column(
         children: [
           InkWell(

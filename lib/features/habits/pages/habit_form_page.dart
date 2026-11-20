@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:streak/core/widgets/glass.dart';
 import 'package:streak/core/shortcuts/app_shortcuts.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
@@ -1766,7 +1767,7 @@ class _HabitFormPageState extends State<HabitFormPage> with ShortcutHost {
             ),
             const SizedBox(height: 20),
             SectionLabel(context.l10n.color),
-            Card(
+            AppCard(
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: ColorPicker(
