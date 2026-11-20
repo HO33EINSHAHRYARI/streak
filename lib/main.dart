@@ -188,7 +188,7 @@ void _run() {
       ],
       child: LiquidGlassWidgets.wrap(
         child: const StreakApp(),
-        adaptiveQuality: false,
+        adaptiveQuality: true,
       ),
     ),
   );
