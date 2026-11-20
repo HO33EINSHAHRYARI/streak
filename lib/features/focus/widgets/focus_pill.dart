@@ -36,7 +36,9 @@ class FocusPill extends StatelessWidget {
     void open() => openFocus(context);
 
     if (glass) {
-      final ink = active ? context.colors.onPrimary : context.colors.onSurface;
+      final ink = active
+          ? GlassStyle.inkOn(context, accent)
+          : context.colors.onSurface;
       return GlassPill(
         onTap: open,
         tint: active ? accent : null,

@@ -27,6 +27,24 @@ class GlassStyle {
 
   static bool dark(BuildContext context) => _dark(context);
 
+  /// Strength a colored tint is rendered at over the glass.
+  static double tintStrength(BuildContext context) =>
+      _dark(context) ? 0.55 : 0.75;
+
+  /// Readable ink (near-black or white) for content sitting on a glass
+  /// surface tinted with [tint]. Computes the effective blended background
+  /// instead of assuming the theme's onPrimary — custom themes (Nord etc.)
+  /// often have pale primaries where white text is unreadable.
+  static Color inkOn(BuildContext context, Color tint) {
+    final blended = Color.alphaBlend(
+      tint.withValues(alpha: tintStrength(context)),
+      Theme.of(context).colorScheme.surface,
+    );
+    return blended.computeLuminance() > 0.5
+        ? const Color(0xFF1C1C1E)
+        : Colors.white;
+  }
+
   static List<BoxShadow> lift(BuildContext context) => _dark(context)
       ? const []
       : [
@@ -153,9 +171,7 @@ class GlassPill extends StatelessWidget {
           // labels still read in the light theme.
           color: tint == null
               ? GlassStyle.tint(context)
-              : tint.withValues(
-                  alpha: GlassStyle.dark(context) ? 0.55 : 0.75,
-                ),
+              : tint.withValues(alpha: GlassStyle.tintStrength(context)),
           child: child,
         ),
       ),

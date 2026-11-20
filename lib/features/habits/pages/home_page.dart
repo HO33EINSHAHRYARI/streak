@@ -555,24 +555,32 @@ class _HomePageState extends State<HomePage> with ShortcutHost {
                       const HabitFormPage(),
                       fullscreenDialog: true,
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          LucideIcons.plus,
-                          size: 16,
-                          color: context.colors.onPrimary,
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          context.l10n.new_label,
-                          style: TextStyle(
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.w700,
-                            color: context.colors.onPrimary,
-                          ),
-                        ),
-                      ],
+                    child: Builder(
+                      builder: (context) {
+                        final ink = GlassStyle.inkOn(
+                          context,
+                          context.colors.primary,
+                        );
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              LucideIcons.plus,
+                              size: 16,
+                              color: ink,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              context.l10n.new_label,
+                              style: TextStyle(
+                                fontSize: 13.5,
+                                fontWeight: FontWeight.w700,
+                                color: ink,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ),
                 const SizedBox(width: 16),
@@ -1365,26 +1373,34 @@ class _EmptyState extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: const LiquidRoundedSuperellipse(borderRadius: 16),
           color: context.colors.primary.withValues(
-            alpha: GlassStyle.dark(context) ? 0.55 : 0.75,
+            alpha: GlassStyle.tintStrength(context),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                LucideIcons.plus,
-                size: 18,
-                color: context.colors.onPrimary,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                context.l10n.add_habit,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: context.colors.onPrimary,
-                ),
-              ),
-            ],
+          child: Builder(
+            builder: (context) {
+              final ink = GlassStyle.inkOn(
+                context,
+                context.colors.primary,
+              );
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    LucideIcons.plus,
+                    size: 18,
+                    color: ink,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    context.l10n.add_habit,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: ink,
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
