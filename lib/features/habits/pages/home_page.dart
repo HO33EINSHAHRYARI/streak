@@ -1364,14 +1364,14 @@ class _EmptyState extends StatelessWidget {
         child: GlassContainer(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: const LiquidRoundedSuperellipse(borderRadius: 16),
-          color: GlassStyle.tint(context),
+          color: context.colors.primary.withValues(alpha: 0.5),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
                 LucideIcons.plus,
                 size: 18,
-                color: context.colors.onSurface,
+                color: context.colors.onPrimary,
               ),
               const SizedBox(width: 8),
               Text(
@@ -1379,7 +1379,7 @@ class _EmptyState extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: context.colors.onSurface,
+                  color: context.colors.onPrimary,
                 ),
               ),
             ],

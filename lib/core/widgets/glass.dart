@@ -146,7 +146,11 @@ class GlassPill extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14),
           alignment: Alignment.center,
           shape: LiquidRoundedSuperellipse(borderRadius: height / 2),
-          color: tint ?? GlassStyle.tint(context),
+          // A colored tint stays glassy: half strength so the lens and
+          // refraction remain visible under the colour.
+          color: tint == null
+              ? GlassStyle.tint(context)
+              : tint.withValues(alpha: 0.5),
           child: child,
         ),
       ),
