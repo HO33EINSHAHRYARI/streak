@@ -186,9 +186,12 @@ void _run() {
           },
         ),
       ],
+      // adaptiveQuality MUST stay false: debug builds run JIT and the FPS
+      // sampler reads the slow frames as "weak device", downgrading the
+      // glass until it disappears after an app restart.
       child: LiquidGlassWidgets.wrap(
         child: const StreakApp(),
-        adaptiveQuality: true,
+        adaptiveQuality: false,
       ),
     ),
   );
