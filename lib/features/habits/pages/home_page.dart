@@ -21,6 +21,8 @@ import 'package:streak/core/utils/app_snackbar.dart';
 import 'package:streak/core/utils/responsive.dart';
 import 'package:streak/core/utils/share_origin.dart';
 import 'package:streak/core/widgets/app_confirm_dialog.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart'
+    hide GlassIconButton, GlassPill, GlassStyle;
 import 'package:streak/core/widgets/app_empty_state.dart';
 import 'package:streak/core/express/express_button.dart';
 import 'package:streak/core/widgets/celebration_overlay.dart';
@@ -1354,17 +1356,33 @@ class _EmptyState extends StatelessWidget {
       icon: LucideIcons.sprout,
       title: context.l10n.empty_title,
       message: context.l10n.empty_body,
-      action: FilledButton.icon(
-        onPressed: () => AppNavigator.push(
+      action: GestureDetector(
+        onTap: () => AppNavigator.push(
           const HabitFormPage(),
           fullscreenDialog: true,
         ),
-        icon: const Icon(LucideIcons.plus, size: 18),
-        label: Text(context.l10n.add_habit),
-        style: FilledButton.styleFrom(
+        child: GlassContainer(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+          shape: const LiquidRoundedSuperellipse(borderRadius: 16),
+          color: GlassStyle.tint(context),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                LucideIcons.plus,
+                size: 18,
+                color: context.colors.onSurface,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                context.l10n.add_habit,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: context.colors.onSurface,
+                ),
+              ),
+            ],
           ),
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'dart:ui';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,11 @@ class GlassStyle {
   static Color edge(BuildContext context) => _dark(context)
       ? Colors.white.withValues(alpha: 0.09)
       : Colors.black.withValues(alpha: 0.06);
+
+  /// Subtle tint layered over real liquid glass to keep content readable.
+  static Color tint(BuildContext context) => _dark(context)
+      ? Colors.white.withValues(alpha: 0.10)
+      : Colors.white.withValues(alpha: 0.30);
 
   static List<BoxShadow> lift(BuildContext context) => _dark(context)
       ? const []
@@ -94,15 +100,13 @@ class GlassIconButton extends StatelessWidget {
       label: tooltip,
       child: Pressable(
         onTap: onTap,
-        child: Container(
+        child: GlassContainer(
           width: size,
           height: size,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: GlassStyle.fill(context),
-            border: Border.all(color: GlassStyle.edge(context)),
-            boxShadow: GlassStyle.lift(context),
-          ),
+          padding: EdgeInsets.zero,
+          shape: const LiquidOval(),
+          color: GlassStyle.tint(context),
+          alignment: Alignment.center,
           child: Icon(
             icon,
             size: size * 0.47,
@@ -137,28 +141,12 @@ class GlassPill extends StatelessWidget {
       button: true,
       child: Pressable(
         onTap: onTap,
-        child: Container(
+        child: GlassContainer(
           height: height,
           padding: const EdgeInsets.symmetric(horizontal: 14),
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(height / 2),
-            color: tint ?? GlassStyle.fill(context),
-            border: Border.all(
-              color: tint == null
-                  ? GlassStyle.edge(context)
-                  : Colors.white.withValues(alpha: 0.18),
-            ),
-            boxShadow: tint == null
-                ? GlassStyle.lift(context)
-                : [
-                    BoxShadow(
-                      color: tint.withValues(alpha: 0.3),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-          ),
+          shape: LiquidRoundedSuperellipse(borderRadius: height / 2),
+          color: tint ?? GlassStyle.tint(context),
           child: child,
         ),
       ),
