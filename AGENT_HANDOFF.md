@@ -91,6 +91,16 @@ echo "q" >> /d/app/.reload_cmd      # خروج
 - کرش صفحه جزیره → `Expanded` زیر `FittedBox` در `_NextChip` حذف شد (island_page.dart)
 - خطای «package identifier or launch activity not found» → پچ flutter_tools (بخش ۳)
 
+## ۶.۵ ⚠️ درس آموخته از experiment شکست‌خورده liquid glass (۱۴۰۴/۱۱/۲۰)
+
+تلاش شد دکمه‌های صفحه امروز به شیشه واقعی پکیج (`GlassContainer`) ارتقا یابند — **روی گوشی شکست خورد و revert شد** (کامیت‌های 80584c9/117a344/0bb0942/94be38f/5a8a536 → revert در 6802338). علل ریشه‌ای که باید قبل از هر تلاش دوباره حل شوند:
+
+1. **`GlassContainer.color` فقط در حالت solid مصرف می‌شود** — در حالت شیشه‌ای کاملاً ignore می‌شود (verified در glass_container.dart و با golden capture). برای شیشه رنگی باید لایه رنگ نیم‌شفاف داخل شیشه با `Clip.antiAlias` گذاشته شود
+2. **انیمیشن‌های TodoDeal/TodoShift روی TickerMode خاموش گیر می‌کنند** — موقع فلیپ چیدمان (تعویض زبان/تم) کارت‌ها منجمدِ شیفت‌خورده می‌مانند؛ safety-net ساده با `isAnimating` جواب نمی‌دهد (تیکرِ بی‌صده `isAnimating=true` گزارش می‌کند) — باید مقایسه مقدار یا snap بی‌قید باشد
+3. **در بیلد debug، اپ ذاتاً کند است** — هر سیستم کیفیت‌سنج/adaptive گلس را downgrade می‌کند
+
+روش مؤثر دیباگ که جواب داد: **golden capture** — pump کردن ویجت با پارامترهای واقعی و ذخیره PNG با `matchesGoldenFile` + `flutter test --update-goldens` و دیدن خود تصویر (فایل تست در تاریخچه گیت موجود است)
+
 ## ۷. جزیره (گیمیفیکشن)
 
 - کد: `lib/features/island/` — صفحه: `island_page.dart`، کنترلر: `IslandController`، داده: `island_ledger.dart`
