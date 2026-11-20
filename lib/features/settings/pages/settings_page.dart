@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:streak/app/theme/app_tokens.dart';
@@ -65,7 +66,7 @@ class ClassicSettingsPage extends StatelessWidget {
           const SizedBox(height: 24),
           Entrance(
             index: 1,
-            child: Card(
+            child: GlassCard(padding: EdgeInsets.zero, shape: const LiquidRoundedSuperellipse(borderRadius: 30), 
               child: PickerRow(
                 icon: LucideIcons.smartphone,
                 title: context.l10n.app_style,
@@ -81,7 +82,7 @@ class ClassicSettingsPage extends StatelessWidget {
           const SizedBox(height: 24),
           Entrance(
             index: 2,
-            child: Card(
+            child: GlassCard(padding: EdgeInsets.zero, shape: const LiquidRoundedSuperellipse(borderRadius: 30), 
               child: Column(
                 children: [
                   NavRow(
@@ -114,7 +115,7 @@ class ClassicSettingsPage extends StatelessWidget {
           const SizedBox(height: 24),
           Entrance(
             index: 3,
-            child: Card(
+            child: GlassCard(padding: EdgeInsets.zero, shape: const LiquidRoundedSuperellipse(borderRadius: 30), 
               child: NavRow(
                 icon: LucideIcons.info,
                 title: context.l10n.about_app,
@@ -154,7 +155,7 @@ class _ClassicSection extends StatelessWidget {
           Entrance(child: SectionLabel(label)),
           if (lead != null) Entrance(index: 1, child: lead!),
           if (lead != null) const SizedBox(height: 12),
-          Entrance(index: 1, child: Card(child: Column(children: children))),
+          Entrance(index: 1, child: GlassCard(padding: EdgeInsets.zero, shape: const LiquidRoundedSuperellipse(borderRadius: 30), child: Column(children: children))),
           if (after != null) Entrance(index: 2, child: after!),
         ],
       ),
@@ -347,7 +348,7 @@ class _ClassicPreferencesPage extends StatelessWidget {
           Entrance(child: SectionLabel(context.l10n.prefs_general)),
           Entrance(
             index: 1,
-            child: Card(
+            child: GlassCard(padding: EdgeInsets.zero, shape: const LiquidRoundedSuperellipse(borderRadius: 30), 
               child: Column(
                 children: [
                   PickerRow(
@@ -453,7 +454,7 @@ class _ClassicPreferencesPage extends StatelessWidget {
           Entrance(index: 2, child: SectionLabel(context.l10n.today)),
           Entrance(
             index: 3,
-            child: Card(
+            child: GlassCard(padding: EdgeInsets.zero, shape: const LiquidRoundedSuperellipse(borderRadius: 30), 
               child: Column(
                 children: [
                   NavRow(
@@ -567,7 +568,7 @@ class _ClassicPreferencesPage extends StatelessWidget {
           Entrance(index: 4, child: SectionLabel(context.l10n.prefs_cards)),
           Entrance(
             index: 5,
-            child: Card(
+            child: GlassCard(padding: EdgeInsets.zero, shape: const LiquidRoundedSuperellipse(borderRadius: 30), 
               child: Column(
                 children: [
                   SettingRow(
@@ -624,7 +625,7 @@ class _ClassicPreferencesPage extends StatelessWidget {
           Entrance(index: 6, child: SectionLabel(context.l10n.prefs_habits)),
           Entrance(
             index: 7,
-            child: Card(
+            child: GlassCard(padding: EdgeInsets.zero, shape: const LiquidRoundedSuperellipse(borderRadius: 30), 
               child: Column(
                 children: [
                   SettingRow(
@@ -680,7 +681,7 @@ class _ClassicPreferencesPage extends StatelessWidget {
           Entrance(index: 8, child: SectionLabel(context.l10n.prefs_features)),
           Entrance(
             index: 9,
-            child: Card(
+            child: GlassCard(padding: EdgeInsets.zero, shape: const LiquidRoundedSuperellipse(borderRadius: 30), 
               child: Column(
                 children: [
                   SettingRow(
@@ -779,7 +780,7 @@ class _ClassicPreferencesPage extends StatelessWidget {
           Entrance(index: 10, child: SectionLabel(context.l10n.prefs_privacy)),
           Entrance(
             index: 11,
-            child: Card(
+            child: GlassCard(padding: EdgeInsets.zero, shape: const LiquidRoundedSuperellipse(borderRadius: 30), 
               child: Column(
                 children: [
                   SettingRow(
