@@ -509,7 +509,11 @@ class _TodosPageState extends State<TodosPage>
 
   Widget _tile(Todo todo, int index, int length, bool express, {bool overdue = false}) {
     final corners = todoCorners(express, index, length);
-    return TodoSwipeable(
+    return Padding(
+      // Explicit breathing room between stacked task cards — the hairline
+      // border alone is invisible on dark themes, making cards look merged.
+      padding: EdgeInsets.only(bottom: index == length - 1 ? 0 : 7),
+      child: TodoSwipeable(
       todo: todo,
       corners: corners,
       onDelete: () => _delete(todo),
@@ -531,6 +535,7 @@ class _TodosPageState extends State<TodosPage>
             ),
           ),
         ),
+      ),
       ),
     );
   }
