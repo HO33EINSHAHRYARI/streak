@@ -1370,37 +1370,50 @@ class _EmptyState extends StatelessWidget {
           fullscreenDialog: true,
         ),
         child: GlassContainer(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          padding: EdgeInsets.zero,
+          clipBehavior: Clip.antiAlias,
           shape: const LiquidRoundedSuperellipse(borderRadius: 16),
-          color: context.colors.primary.withValues(
-            alpha: GlassStyle.tintStrength(context),
-          ),
-          child: Builder(
-            builder: (context) {
-              final ink = GlassStyle.inkOn(
-                context,
-                context.colors.primary,
-              );
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    LucideIcons.plus,
-                    size: 18,
-                    color: ink,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    context.l10n.add_habit,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: ink,
-                    ),
-                  ),
-                ],
-              );
-            },
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: ColoredBox(
+                  color: context.colors.primary.withValues(alpha: 0.5),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 14,
+                ),
+                child: Builder(
+                  builder: (context) {
+                    final ink = GlassStyle.inkOn(
+                      context,
+                      context.colors.primary,
+                    );
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          LucideIcons.plus,
+                          size: 18,
+                          color: ink,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          context.l10n.add_habit,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: ink,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),

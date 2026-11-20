@@ -28,8 +28,7 @@ class GlassStyle {
   static bool dark(BuildContext context) => _dark(context);
 
   /// Strength a colored tint is rendered at over the glass.
-  static double tintStrength(BuildContext context) =>
-      _dark(context) ? 0.55 : 0.75;
+  static double tintStrength(BuildContext context) => 0.45;
 
   /// Readable ink (near-black or white) for content sitting on a glass
   /// surface tinted with [tint]. Computes the effective blended background
@@ -170,16 +169,26 @@ class GlassPill extends StatelessWidget {
         onTap: onTap,
         child: GlassContainer(
           height: height,
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          alignment: Alignment.center,
+          padding: EdgeInsets.zero,
+          clipBehavior: Clip.antiAlias,
           shape: LiquidRoundedSuperellipse(borderRadius: height / 2),
-          // A colored tint stays glassy: the lens and refraction remain
-          // visible under the colour, while strong enough that white
-          // labels still read in the light theme.
-          color: tint == null
-              ? GlassStyle.tint(context)
-              : tint.withValues(alpha: GlassStyle.tintStrength(context)),
-          child: child,
+          child: Stack(
+            children: [
+              // A colored tint stays glassy: a half-strength colour layer
+              // inside the glass keeps the lens and refraction visible
+              // under the colour.
+              if (tint != null)
+                Positioned.fill(
+                  child: ColoredBox(
+                    color: tint.withValues(alpha: 0.45),
+                  ),
+                ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: child,
+              ),
+            ],
+          ),
         ),
       ),
     );
